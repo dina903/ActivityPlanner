@@ -6,8 +6,9 @@
 package mainPlanner;
 
 /**
- *
- * @author Dido
+ * Comp585
+ * @author Dina
+ * @author Karoon
  */
 public class Welcome extends javax.swing.JFrame {
 
