@@ -19,6 +19,7 @@ public class welcomeDialog extends javax.swing.JDialog {
         initComponents();
         signInPanel.setVisible(false);
         signUpPanel.setVisible(false);
+        mainFrame.setVisible(false);
     }
 
     /**
@@ -30,6 +31,10 @@ public class welcomeDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        mainFrame = new javax.swing.JFrame();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jTabbedPane5 = new javax.swing.JTabbedPane();
+        jTabbedPane6 = new javax.swing.JTabbedPane();
         welcomePanel = new javax.swing.JPanel();
         welcomeLbl1 = new javax.swing.JLabel();
         welcomeLbl2 = new javax.swing.JLabel();
@@ -48,6 +53,22 @@ public class welcomeDialog extends javax.swing.JDialog {
         NewUserPassword = new javax.swing.JPasswordField();
         NewUsername = new javax.swing.JTextField();
 
+        mainFrame.setMinimumSize(new java.awt.Dimension(552, 330));
+
+        jTabbedPane1.addTab("tab1", jTabbedPane5);
+        jTabbedPane1.addTab("tab2", jTabbedPane6);
+
+        javax.swing.GroupLayout mainFrameLayout = new javax.swing.GroupLayout(mainFrame.getContentPane());
+        mainFrame.getContentPane().setLayout(mainFrameLayout);
+        mainFrameLayout.setHorizontalGroup(
+            mainFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 911, Short.MAX_VALUE)
+        );
+        mainFrameLayout.setVerticalGroup(
+            mainFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Welcome to Student PAM");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -55,7 +76,6 @@ public class welcomeDialog extends javax.swing.JDialog {
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         setName("welcomeDialog"); // NOI18N
         setPreferredSize(new java.awt.Dimension(417, 252));
-        setResizable(false);
 
         welcomeLbl1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         welcomeLbl1.setText("Welcome to PAM");
@@ -230,9 +250,9 @@ public class welcomeDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(welcomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(signInPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
+                .addComponent(signInPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(signUpPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
+                .addComponent(signUpPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -253,6 +273,8 @@ public class welcomeDialog extends javax.swing.JDialog {
 
     private void signInbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInbtnActionPerformed
         // TODO add your handling code here:
+        setVisible(false);
+        mainFrame.setVisible(true);
     }//GEN-LAST:event_signInbtnActionPerformed
 
     private void signUpbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signUpbtnActionPerformed
@@ -298,7 +320,6 @@ public class welcomeDialog extends javax.swing.JDialog {
                     }
                 });
                 dialog.setVisible(true);
-                
             }
         });
     }
@@ -311,6 +332,10 @@ public class welcomeDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnNewUser;
     private javax.swing.JPasswordField existUserPassword;
     private javax.swing.JTextField existUsername;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane5;
+    private javax.swing.JTabbedPane jTabbedPane6;
+    private javax.swing.JFrame mainFrame;
     private javax.swing.JLabel passwordLbl;
     private javax.swing.JPanel signInPanel;
     private javax.swing.JButton signInbtn;
