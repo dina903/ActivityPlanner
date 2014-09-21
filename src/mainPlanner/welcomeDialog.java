@@ -54,20 +54,12 @@ public class welcomeDialog extends javax.swing.JDialog {
         NewUsername = new javax.swing.JTextField();
 
         mainFrame.setMinimumSize(new java.awt.Dimension(552, 330));
+        mainFrame.getContentPane().setLayout(new java.awt.GridLayout());
 
         jTabbedPane1.addTab("tab1", jTabbedPane5);
         jTabbedPane1.addTab("tab2", jTabbedPane6);
 
-        javax.swing.GroupLayout mainFrameLayout = new javax.swing.GroupLayout(mainFrame.getContentPane());
-        mainFrame.getContentPane().setLayout(mainFrameLayout);
-        mainFrameLayout.setHorizontalGroup(
-            mainFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 911, Short.MAX_VALUE)
-        );
-        mainFrameLayout.setVerticalGroup(
-            mainFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-        );
+        mainFrame.getContentPane().add(jTabbedPane1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Welcome to Student PAM");
@@ -75,9 +67,9 @@ public class welcomeDialog extends javax.swing.JDialog {
         setMaximumSize(new java.awt.Dimension(32767, 32767));
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         setName("welcomeDialog"); // NOI18N
-        setPreferredSize(new java.awt.Dimension(417, 252));
 
         welcomeLbl1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        welcomeLbl1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         welcomeLbl1.setText("Welcome to PAM");
 
         welcomeLbl2.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
@@ -105,6 +97,12 @@ public class welcomeDialog extends javax.swing.JDialog {
         welcomePanelLayout.setHorizontalGroup(
             welcomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(welcomePanelLayout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addComponent(btnExistingUser)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnNewUser, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, welcomePanelLayout.createSequentialGroup()
                 .addContainerGap(103, Short.MAX_VALUE)
                 .addGroup(welcomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, welcomePanelLayout.createSequentialGroup()
@@ -112,13 +110,7 @@ public class welcomeDialog extends javax.swing.JDialog {
                         .addGap(70, 70, 70))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, welcomePanelLayout.createSequentialGroup()
                         .addComponent(welcomeLbl1)
-                        .addGap(122, 122, 122))))
-            .addGroup(welcomePanelLayout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addComponent(btnExistingUser)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnNewUser, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29))
+                        .addGap(128, 128, 128))))
         );
         welcomePanelLayout.setVerticalGroup(
             welcomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,7 +134,7 @@ public class welcomeDialog extends javax.swing.JDialog {
         passwordLbl.setFont(new java.awt.Font("Calibri", 0, 12)); // NOI18N
         passwordLbl.setText("Password:");
 
-        signInbtn.setText("SignIn");
+        signInbtn.setText("Sign In");
         signInbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 signInbtnActionPerformed(evt);
@@ -194,7 +186,7 @@ public class welcomeDialog extends javax.swing.JDialog {
         SignUppasswordLbl.setFont(new java.awt.Font("Calibri", 0, 12)); // NOI18N
         SignUppasswordLbl.setText("Password:");
 
-        signUpbtn.setText("SignUp");
+        signUpbtn.setText("Sign Up");
         signUpbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 signUpbtnActionPerformed(evt);
