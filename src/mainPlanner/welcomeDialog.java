@@ -1,16 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author Dina & Karoon
  */
+
 package mainPlanner;
 
-/**
- *
- * @author Dido
- */
-public class welcomeDialog extends javax.swing.JDialog {
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import javax.swing.JOptionPane;
 
+public class welcomeDialog extends javax.swing.JDialog implements Serializable {
+     
     /**
      * Creates new form welcomeDialog
      */
@@ -53,6 +55,7 @@ public class welcomeDialog extends javax.swing.JDialog {
         NewUserPassword = new javax.swing.JPasswordField();
         NewUsername = new javax.swing.JTextField();
 
+        mainFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setMinimumSize(new java.awt.Dimension(552, 330));
         mainFrame.getContentPane().setLayout(new java.awt.GridLayout());
 
@@ -260,17 +263,28 @@ public class welcomeDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
         welcomePanel.setVisible(false);
         signUpPanel.setVisible(true);
-       
     }//GEN-LAST:event_btnNewUserActionPerformed
 
     private void signInbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInbtnActionPerformed
-        // TODO add your handling code here:
+        /*User pamUser = new User("Test main", "Test main");
+        User retrieveUser = pamUser.deserialize();
+        System.out.println("username: " + retrieveUser.getUserName() + " & password: " + retrieveUser.getUserPassword());*/
         setVisible(false);
         mainFrame.setVisible(true);
     }//GEN-LAST:event_signInbtnActionPerformed
 
     private void signUpbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signUpbtnActionPerformed
-        // TODO add your handling code here:
+        User pamUser = new User("Test main", "Test main");
+        String username = NewUsername.getText().toString(); //get username textfield data
+        String userpassword = NewUserPassword.getPassword().toString(); //get password field data
+        
+        pamUser.setUserName(username); // set user username
+        pamUser.setUserPassword(userpassword); //set user password
+        pamUser.initSave(); //save file
+        pamUser.printInfo(); //print user information
+        
+        setVisible(false);
+        mainFrame.setVisible(true);
     }//GEN-LAST:event_signUpbtnActionPerformed
 
     /**
