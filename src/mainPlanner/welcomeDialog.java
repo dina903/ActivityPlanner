@@ -266,7 +266,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     }//GEN-LAST:event_btnNewUserActionPerformed
 
     private void signInbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInbtnActionPerformed
-        /*User pamUser = new User("Test main", "Test main");
+        /* this part is not tested
+        User pamUser = new User("Test main", "Test main");
         User retrieveUser = pamUser.deserialize();
         System.out.println("username: " + retrieveUser.getUserName() + " & password: " + retrieveUser.getUserPassword());*/
         setVisible(false);
