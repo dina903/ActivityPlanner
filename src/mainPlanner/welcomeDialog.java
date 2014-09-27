@@ -13,23 +13,31 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Date;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class welcomeDialog extends javax.swing.JDialog implements Serializable {
      JTable studyTable, nutritionTable, workoutTable;
      DefaultTableModel studyModel, nutritionModel, workoutModel;
-     JLayeredPane weekSummary, logSummary;
+     JPanel weekSummary, logSummary;
      ButtonGroup group;
      JScrollPane scrollPane;
+     BufferedImage icon;
     /**
      * Creates new form welcomeDialog
      */
@@ -66,8 +74,10 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         workoutTable = new JTable(workoutModel);
         workoutTable.setShowGrid(true);
         
-        weekSummary = new JLayeredPane();
-        logSummary = new JLayeredPane();
+        weekSummary = new JPanel();
+        weekSummary.setBackground(Color.white);
+        logSummary = new JPanel();
+        logSummary.setBackground(Color.white);
         tabbedPane.addTab("Week View", weekSummary);
         tabbedPane.addTab("Log View", logSummary);
         
@@ -75,6 +85,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         group.add(study);
         group.add(nutrition);
         group.add(workout);
+        
     }
 
     /**
@@ -93,10 +104,14 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         nutrition = new javax.swing.JRadioButton();
         workout = new javax.swing.JRadioButton();
         rightPanel = new javax.swing.JPanel();
+        addRow = new javax.swing.JButton();
+        deleteRow = new javax.swing.JButton();
         tabbedPane = new javax.swing.JTabbedPane();
         menuBar = new javax.swing.JMenuBar();
         file = new javax.swing.JMenu();
         edit = new javax.swing.JMenu();
+        usage = new javax.swing.JMenu();
+        author = new javax.swing.JMenu();
         welcomePanel = new javax.swing.JPanel();
         welcomeLbl1 = new javax.swing.JLabel();
         welcomeLbl2 = new javax.swing.JLabel();
@@ -122,6 +137,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         leftPanel.setName(""); // NOI18N
 
         activities.setAlignment(java.awt.Label.CENTER);
+        activities.setBackground(java.awt.SystemColor.activeCaption);
         activities.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         activities.setText("Activities");
 
@@ -166,9 +182,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         leftPanelLayout.setVerticalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(leftPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(activities, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
+                .addGap(47, 47, 47)
                 .addComponent(study)
                 .addGap(18, 18, 18)
                 .addComponent(nutrition)
@@ -179,15 +194,33 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
         mainFrame.getContentPane().add(leftPanel, java.awt.BorderLayout.LINE_START);
 
+        addRow.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        addRow.setForeground(new java.awt.Color(255, 0, 51));
+        addRow.setText("Add Row");
+
+        deleteRow.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        deleteRow.setForeground(new java.awt.Color(255, 0, 51));
+        deleteRow.setText("Delete Row");
+
         javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
         rightPanel.setLayout(rightPanelLayout);
         rightPanelLayout.setHorizontalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(rightPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(deleteRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 498, Short.MAX_VALUE)
+            .addGroup(rightPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(addRow)
+                .addGap(18, 18, 18)
+                .addComponent(deleteRow)
+                .addContainerGap(407, Short.MAX_VALUE))
         );
 
         mainFrame.getContentPane().add(rightPanel, java.awt.BorderLayout.LINE_END);
@@ -201,6 +234,12 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
         edit.setText("Edit");
         menuBar.add(edit);
+
+        usage.setText("Usage");
+        menuBar.add(usage);
+
+        author.setText("Author");
+        menuBar.add(author);
 
         mainFrame.setJMenuBar(menuBar);
 
@@ -487,8 +526,11 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private javax.swing.JTextField NewUsername;
     private javax.swing.JLabel SignUppasswordLbl;
     private java.awt.Label activities;
+    private javax.swing.JButton addRow;
+    private javax.swing.JMenu author;
     private javax.swing.JButton btnExistingUser;
     private javax.swing.JButton btnNewUser;
+    private javax.swing.JButton deleteRow;
     private javax.swing.JMenu edit;
     private javax.swing.JPasswordField existUserPassword;
     private javax.swing.JTextField existUsername;
@@ -506,6 +548,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private javax.swing.JButton signUpbtn;
     private javax.swing.JRadioButton study;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JMenu usage;
     private javax.swing.JLabel usernameLbl;
     private javax.swing.JLabel welcomeLbl1;
     private javax.swing.JLabel welcomeLbl2;
