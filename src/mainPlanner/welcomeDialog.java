@@ -4,24 +4,77 @@
 
 package mainPlanner;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
 
 public class welcomeDialog extends javax.swing.JDialog implements Serializable {
-     
+     JTable studyTable, nutritionTable, workoutTable;
+     DefaultTableModel studyModel, nutritionModel, workoutModel;
+     JLayeredPane weekSummary, logSummary;
+     ButtonGroup group;
+     JScrollPane scrollPane;
     /**
      * Creates new form welcomeDialog
      */
     public welcomeDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+       try {
+        mainFrame.setIconImage(ImageIO.read(new File("C:\\Users\\Karoon\\Documents\\Comp 585\\activitymonitor.jpg")));
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+        
         signInPanel.setVisible(false);
         signUpPanel.setVisible(false);
         mainFrame.setVisible(false);
+       
+        study.setSelected(true);
+        
+        String [] studyColumns = {"Date","Class","Time Taken"};
+        studyModel = new DefaultTableModel(studyColumns,3);
+        studyTable = new JTable(studyModel);
+        studyTable.setShowGrid(true);
+        scrollPane = new JScrollPane(studyTable);
+        tabbedPane.addTab("Day View", scrollPane);
+        studyTable.getParent().setBackground(Color.white);
+        
+        String [] nutritionCol = {"Date","Food/Drink List","Time","Calories"};
+        nutritionModel = new DefaultTableModel(nutritionCol, 3);
+        nutritionTable = new JTable(nutritionModel);
+        nutritionTable.setShowGrid(true);
+        
+        String [] workoutCol = {"Date","Workout Type","Time","Calories Burned"};
+        workoutModel = new DefaultTableModel(workoutCol, 3);
+        workoutTable = new JTable(workoutModel);
+        workoutTable.setShowGrid(true);
+        
+        weekSummary = new JLayeredPane();
+        logSummary = new JLayeredPane();
+        tabbedPane.addTab("Week View", weekSummary);
+        tabbedPane.addTab("Log View", logSummary);
+        
+        group = new ButtonGroup();
+        group.add(study);
+        group.add(nutrition);
+        group.add(workout);
     }
 
     /**
@@ -34,9 +87,16 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private void initComponents() {
 
         mainFrame = new javax.swing.JFrame();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jTabbedPane5 = new javax.swing.JTabbedPane();
-        jTabbedPane6 = new javax.swing.JTabbedPane();
+        leftPanel = new javax.swing.JPanel();
+        activities = new java.awt.Label();
+        study = new javax.swing.JRadioButton();
+        nutrition = new javax.swing.JRadioButton();
+        workout = new javax.swing.JRadioButton();
+        rightPanel = new javax.swing.JPanel();
+        tabbedPane = new javax.swing.JTabbedPane();
+        menuBar = new javax.swing.JMenuBar();
+        file = new javax.swing.JMenu();
+        edit = new javax.swing.JMenu();
         welcomePanel = new javax.swing.JPanel();
         welcomeLbl1 = new javax.swing.JLabel();
         welcomeLbl2 = new javax.swing.JLabel();
@@ -56,13 +116,93 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         NewUsername = new javax.swing.JTextField();
 
         mainFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        mainFrame.setTitle("Personal Activity Monitor");
         mainFrame.setMinimumSize(new java.awt.Dimension(552, 330));
-        mainFrame.getContentPane().setLayout(new java.awt.GridLayout());
 
-        jTabbedPane1.addTab("tab1", jTabbedPane5);
-        jTabbedPane1.addTab("tab2", jTabbedPane6);
+        leftPanel.setName(""); // NOI18N
 
-        mainFrame.getContentPane().add(jTabbedPane1);
+        activities.setAlignment(java.awt.Label.CENTER);
+        activities.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        activities.setText("Activities");
+
+        study.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        study.setForeground(new java.awt.Color(255, 0, 51));
+        study.setText("Study");
+
+        nutrition.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        nutrition.setForeground(new java.awt.Color(255, 0, 51));
+        nutrition.setText("Nutrition");
+        nutrition.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nutritionActionPerformed(evt);
+            }
+        });
+
+        workout.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        workout.setForeground(new java.awt.Color(255, 0, 51));
+        workout.setText("Workout");
+        workout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                workoutActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
+        leftPanel.setLayout(leftPanelLayout);
+        leftPanelLayout.setHorizontalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(activities, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(study)
+                .addContainerGap(28, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(workout, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(nutrition, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+        leftPanelLayout.setVerticalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(activities, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37)
+                .addComponent(study)
+                .addGap(18, 18, 18)
+                .addComponent(nutrition)
+                .addGap(18, 18, 18)
+                .addComponent(workout)
+                .addContainerGap(294, Short.MAX_VALUE))
+        );
+
+        mainFrame.getContentPane().add(leftPanel, java.awt.BorderLayout.LINE_START);
+
+        javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
+        rightPanel.setLayout(rightPanelLayout);
+        rightPanelLayout.setHorizontalGroup(
+            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        rightPanelLayout.setVerticalGroup(
+            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 498, Short.MAX_VALUE)
+        );
+
+        mainFrame.getContentPane().add(rightPanel, java.awt.BorderLayout.LINE_END);
+
+        tabbedPane.setBackground(new java.awt.Color(255, 255, 255));
+        tabbedPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        mainFrame.getContentPane().add(tabbedPane, java.awt.BorderLayout.CENTER);
+
+        file.setText("File");
+        menuBar.add(file);
+
+        edit.setText("Edit");
+        menuBar.add(edit);
+
+        mainFrame.setJMenuBar(menuBar);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Welcome to Student PAM");
@@ -288,6 +428,17 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         mainFrame.setVisible(true);
     }//GEN-LAST:event_signUpbtnActionPerformed
 
+    private void nutritionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nutritionActionPerformed
+        // TODO add your handling code here:
+       // evt.getSource();
+        scrollPane.setViewportView(nutritionTable);
+    }//GEN-LAST:event_nutritionActionPerformed
+
+    private void workoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_workoutActionPerformed
+        // TODO add your handling code here:
+        scrollPane.setViewportView(workoutTable);
+    }//GEN-LAST:event_workoutActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -335,23 +486,30 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private javax.swing.JPasswordField NewUserPassword;
     private javax.swing.JTextField NewUsername;
     private javax.swing.JLabel SignUppasswordLbl;
+    private java.awt.Label activities;
     private javax.swing.JButton btnExistingUser;
     private javax.swing.JButton btnNewUser;
+    private javax.swing.JMenu edit;
     private javax.swing.JPasswordField existUserPassword;
     private javax.swing.JTextField existUsername;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane5;
-    private javax.swing.JTabbedPane jTabbedPane6;
+    private javax.swing.JMenu file;
+    private javax.swing.JPanel leftPanel;
     private javax.swing.JFrame mainFrame;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JRadioButton nutrition;
     private javax.swing.JLabel passwordLbl;
+    private javax.swing.JPanel rightPanel;
     private javax.swing.JPanel signInPanel;
     private javax.swing.JButton signInbtn;
     private javax.swing.JPanel signUpPanel;
     private javax.swing.JLabel signUpUsername;
     private javax.swing.JButton signUpbtn;
+    private javax.swing.JRadioButton study;
+    private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JLabel usernameLbl;
     private javax.swing.JLabel welcomeLbl1;
     private javax.swing.JLabel welcomeLbl2;
     private javax.swing.JPanel welcomePanel;
+    private javax.swing.JRadioButton workout;
     // End of variables declaration//GEN-END:variables
 }
