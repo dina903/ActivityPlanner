@@ -5,6 +5,7 @@
 package mainPlanner;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -13,10 +14,14 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -24,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -38,6 +44,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
      ButtonGroup group;
      JScrollPane scrollPane;
      BufferedImage icon;
+     Vector <Object> studyRow, studyColumns, data, nutritionCol, nutritionRow, workoutCol, workoutRow;
     /**
      * Creates new form welcomeDialog
      */
@@ -56,16 +63,32 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
        
         study.setSelected(true);
         
-        String [] studyColumns = {"Date","Class","Time Taken"};
-        studyModel = new DefaultTableModel(studyColumns,3);
+        data = new Vector<Object>();
+        studyColumns = new Vector <Object>();
+        studyColumns.add("Date");
+        studyColumns.add("Class");
+        studyColumns.add("Time Taken");
+        studyRow = new Vector <Object>();
+        data.add(new Date());
+        data.add("");
+        data.add("");
+        studyRow.add(data);
+        studyModel = new DefaultTableModel(studyRow, studyColumns);
         studyTable = new JTable(studyModel);
         studyTable.setShowGrid(true);
         scrollPane = new JScrollPane(studyTable);
         tabbedPane.addTab("Day View", scrollPane);
         studyTable.getParent().setBackground(Color.white);
         
-        String [] nutritionCol = {"Date","Food/Drink List","Time","Calories"};
-        nutritionModel = new DefaultTableModel(nutritionCol, 3);
+        nutritionCol = new Vector<Object>();
+        nutritionCol.add("Date");
+        nutritionCol.add("Food/Drink List");
+        nutritionCol.add("Calories");
+        nutritionCol.add("Time");
+        data.add(new Time(16));
+        nutritionRow = new Vector<Object>();
+        nutritionRow.add(data);
+        nutritionModel = new DefaultTableModel(nutritionRow,nutritionCol);
         nutritionTable = new JTable(nutritionModel);
         nutritionTable.setShowGrid(true);
         
@@ -85,7 +108,14 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         group.add(study);
         group.add(nutrition);
         group.add(workout);
-        
+     
+        setupDateColumn(studyTable.getColumnModel().getColumn(0));
+    }
+    
+    //Setup date column
+    public void setupDateColumn(TableColumn col) {
+   // col.setPreferredWidth(100);
+    col.setCellRenderer(new DateRender());
     }
 
     /**
@@ -132,7 +162,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
         mainFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setTitle("Personal Activity Monitor");
-        mainFrame.setMinimumSize(new java.awt.Dimension(552, 330));
+        mainFrame.setMinimumSize(new java.awt.Dimension(752, 530));
 
         leftPanel.setName(""); // NOI18N
 
@@ -556,3 +586,15 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private javax.swing.JRadioButton workout;
     // End of variables declaration//GEN-END:variables
 }
+
+//Date Renderer
+ class DateRender extends DefaultTableCellRenderer {
+    @Override
+    public Component getTableCellRendererComponent(JTable t,
+      Object value, boolean isSelected, boolean hasFocus, 
+      int row, int col){
+        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM d, yyyy");
+        setValue(format.format((Date) value));
+        return this;
+    }
+ }
