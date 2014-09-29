@@ -16,10 +16,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -29,6 +31,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -44,7 +48,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
      ButtonGroup group;
      JScrollPane scrollPane;
      BufferedImage icon;
-     Vector <Object> studyRow, studyColumns, data, nutritionCol, nutritionRow, workoutCol, workoutRow;
+     Vector <Object> studyRow, studyColumns, dataStudy, dataNutrition, dataWorkout, nutritionCol, nutritionRow, workoutCol, workoutRow;
     /**
      * Creates new form welcomeDialog
      */
@@ -63,37 +67,53 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
        
         study.setSelected(true);
         
-        data = new Vector<Object>();
+        dataStudy = new Vector<Object>();
         studyColumns = new Vector <Object>();
         studyColumns.add("Date");
         studyColumns.add("Class");
         studyColumns.add("Time Taken");
         studyRow = new Vector <Object>();
-        data.add(new Date());
-        data.add("");
-        data.add("");
-        studyRow.add(data);
+        dataStudy.add(new Date());
+        dataStudy.add("");
+        dataStudy.add(new Integer(1));
+        studyRow.add(dataStudy);
         studyModel = new DefaultTableModel(studyRow, studyColumns);
         studyTable = new JTable(studyModel);
         studyTable.setShowGrid(true);
         scrollPane = new JScrollPane(studyTable);
         tabbedPane.addTab("Day View", scrollPane);
         studyTable.getParent().setBackground(Color.white);
+        studyModel.addTableModelListener(new modelListener());
         
         nutritionCol = new Vector<Object>();
         nutritionCol.add("Date");
-        nutritionCol.add("Food/Drink List");
+        nutritionCol.add("Food/Drink");
         nutritionCol.add("Calories");
         nutritionCol.add("Time");
-        data.add(new Time(16));
         nutritionRow = new Vector<Object>();
-        nutritionRow.add(data);
+        dataNutrition = new Vector<Object>();
+        dataNutrition.add(new Date());
+        dataNutrition.add("");
+        dataNutrition.add(new Integer(100));
+        dataNutrition.add(new Time(0));
+        nutritionRow.add(dataNutrition);
         nutritionModel = new DefaultTableModel(nutritionRow,nutritionCol);
         nutritionTable = new JTable(nutritionModel);
         nutritionTable.setShowGrid(true);
         
-        String [] workoutCol = {"Date","Workout Type","Time","Calories Burned"};
-        workoutModel = new DefaultTableModel(workoutCol, 3);
+        workoutCol = new Vector<Object>();
+        dataWorkout = new Vector<Object>();
+        workoutCol.add("Date");
+        workoutCol.add("Workout Type");
+        workoutCol.add("Calories Burned");
+        workoutCol.add("Time");
+        dataWorkout.add(new Date());
+        dataWorkout.add("Treadmill");
+        dataWorkout.add(new Integer(100));
+        dataWorkout.add(new Time(0));
+        workoutRow = new Vector<Object>();
+        workoutRow.add(dataWorkout);
+        workoutModel = new DefaultTableModel(workoutRow,workoutCol);
         workoutTable = new JTable(workoutModel);
         workoutTable.setShowGrid(true);
         
@@ -108,8 +128,15 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         group.add(study);
         group.add(nutrition);
         group.add(workout);
-     
+    //Setup Renderers for Date and Calories columns 
         setupDateColumn(studyTable.getColumnModel().getColumn(0));
+        setupDateColumn(nutritionTable.getColumnModel().getColumn(0));
+        setupDateColumn(workoutTable.getColumnModel().getColumn(0));
+        setupCaloriesCol(nutritionTable.getColumnModel().getColumn(2));
+        setupCaloriesCol(workoutTable.getColumnModel().getColumn(2));
+        setupWorkTypeCol(workoutTable.getColumnModel().getColumn(1));
+        
+        System.out.println(studyTable.getValueAt(0, 0).toString());
     }
     
     //Setup date column
@@ -117,7 +144,36 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
    // col.setPreferredWidth(100);
     col.setCellRenderer(new DateRender());
     }
+    
+    //Setup Calories combo list
+    public void setupCaloriesCol(TableColumn col) {
+    Vector <Integer> cals = new Vector <Integer> ();
+    for(int i = 100; i <= 4000; i += 50) 
+        cals.addElement(new Integer(i));
+    JComboBox <Integer> combo = new JComboBox <Integer> (cals);
+    combo.setSelectedItem(new Integer(100));
+    col.setCellEditor(new DefaultCellEditor(combo));
+    col.setCellRenderer(new CaloriesRender());
+    }
+    
+    //Setup Workout type combo list
+    public void setupWorkTypeCol(TableColumn col) {
+    Vector <String> cals = new Vector <String> ();
+        cals.addElement("Treadmill");
+        cals.addElement("Elliptical");
+        cals.addElement("XLS");
+        cals.addElement("Exercise Bike");
+        cals.addElement("Rower");
+        cals.addElement("Zumba class");
+        cals.addElement("Body Pump");
+        cals.addElement("Kick Box");
+    JComboBox <String> combo = new JComboBox <String> (cals);
+    combo.setSelectedIndex(0);
+    col.setCellEditor(new DefaultCellEditor(combo));
+    col.setCellRenderer(new CaloriesRender());
+    }
 
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -162,7 +218,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
         mainFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setTitle("Personal Activity Monitor");
-        mainFrame.setMinimumSize(new java.awt.Dimension(752, 530));
+        mainFrame.setMinimumSize(new java.awt.Dimension(1152, 930));
 
         leftPanel.setName(""); // NOI18N
 
@@ -227,10 +283,20 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         addRow.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         addRow.setForeground(new java.awt.Color(255, 0, 51));
         addRow.setText("Add Row");
+        addRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addRowActionPerformed(evt);
+            }
+        });
 
         deleteRow.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         deleteRow.setForeground(new java.awt.Color(255, 0, 51));
         deleteRow.setText("Delete Row");
+        deleteRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteRowActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
         rightPanel.setLayout(rightPanelLayout);
@@ -508,6 +574,46 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         scrollPane.setViewportView(workoutTable);
     }//GEN-LAST:event_workoutActionPerformed
 
+    private void addRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRowActionPerformed
+        // TODO add your handling code here:
+        Vector<Object> array = new Vector<Object>();
+        array.add(0, new Date());
+        if(study.isSelected()){
+            for(int i = 1; i < 3; i++){
+                array.add(null);
+            }
+            studyModel.addRow(array);
+        }
+        else if (nutrition.isSelected() || workout.isSelected()){
+             for(int i = 1; i < 4; i++){
+                array.add(null);
+            }
+            if(nutrition.isSelected())
+                nutritionModel.addRow(array);
+            else
+                workoutModel.addRow(array);
+        }
+    }//GEN-LAST:event_addRowActionPerformed
+
+    private void deleteRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRowActionPerformed
+        // TODO add your handling code here:
+        if(study.isSelected()){
+            int row = studyTable.getSelectedRow();
+            if(row >= 0)
+                studyModel.removeRow(row);
+        }
+        else if(nutrition.isSelected()){
+             int row = nutritionTable.getSelectedRow();
+            if(row >= 0)
+                nutritionModel.removeRow(row);
+        }
+        else{
+            int row = workoutTable.getSelectedRow();
+            if(row >= 0)
+                workoutModel.removeRow(row);
+        }
+    }//GEN-LAST:event_deleteRowActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -593,8 +699,52 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     public Component getTableCellRendererComponent(JTable t,
       Object value, boolean isSelected, boolean hasFocus, 
       int row, int col){
-        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM d, yyyy");
-        setValue(format.format((Date) value));
+        SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d, yyyy");
+         System.out.println("dataCellRender " + df.format((Date)value));
+        setValue(df.format((Date) value));
         return this;
     }
  }
+//Calories Renderer
+ class CaloriesRender extends DefaultTableCellRenderer {
+    @Override
+    public Component getTableCellRendererComponent( JTable t,
+      Object value, boolean isSelected, boolean hasFocus, 
+      int row, int col) 
+      {
+      int calories;
+      setValue(value);
+     // calories = ((Integer) value).intValue();
+      return this;
+      }
+    }
+
+class modelListener implements TableModelListener{
+     @Override
+     public void tableChanged(TableModelEvent e) {
+      int colChanged = e.getColumn();
+      int firstRowChanged = e.getFirstRow();
+      int lastRowChanged = e.getLastRow();
+      int netRowChange = lastRowChanged - firstRowChanged +1;
+      switch (e.getType()) {
+        case TableModelEvent.INSERT :  { System.out.println("insert");
+          /*  if(colChanged == 0){
+                
+            }*/
+            break;}
+        case TableModelEvent.UPDATE :  System.out.println("update"); break;
+        case TableModelEvent.DELETE :  System.out.println("delete"); break;
+        }
+      }
+}
+
+/*class SummaryObj{
+    protected String month="";
+    protected String day="";
+    protected int netCal=0;
+    
+    public SummaryObj(String date, int netCal){
+        
+    }
+    
+}*/
