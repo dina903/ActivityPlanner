@@ -4,8 +4,11 @@
 
 package mainPlanner;
 
+import com.toedter.calendar.JCalendar;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,10 +23,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Vector;
 import javax.imageio.ImageIO;
+import javax.rmi.CORBA.UtilDelegate;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -31,6 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -44,7 +52,7 @@ import javax.swing.table.TableColumnModel;
 public class welcomeDialog extends javax.swing.JDialog implements Serializable {
      JTable studyTable, nutritionTable, workoutTable;
      DefaultTableModel studyModel, nutritionModel, workoutModel;
-     JPanel weekSummary, logSummary;
+     JPanel weekSummary, logSummary, southPanel;
      ButtonGroup group;
      JScrollPane scrollPane;
      BufferedImage icon;
@@ -64,16 +72,21 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         signInPanel.setVisible(false);
         signUpPanel.setVisible(false);
         mainFrame.setVisible(false);
-       
-        study.setSelected(true);
+        southPanel = new JPanel();
+        mainFrame.getContentPane().add(southPanel, BorderLayout.PAGE_END);
+        JButton submit = new JButton("Submit");
+        southPanel.add(submit, BorderLayout.LINE_END);
+        submit.setForeground(Color.red);
+        submit.setFont(new Font("Tahoma", Font.BOLD, 18));
+        jDateChooser1.setDate(new Date());
+        System.out.println(jDateChooser1.getDate());
         
+        study.setSelected(true);
         dataStudy = new Vector<Object>();
         studyColumns = new Vector <Object>();
-        studyColumns.add("Date");
         studyColumns.add("Class");
         studyColumns.add("Time Taken");
         studyRow = new Vector <Object>();
-        dataStudy.add(new Date());
         dataStudy.add("");
         dataStudy.add(new Integer(1));
         studyRow.add(dataStudy);
@@ -86,13 +99,11 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         studyModel.addTableModelListener(new modelListener());
         
         nutritionCol = new Vector<Object>();
-        nutritionCol.add("Date");
         nutritionCol.add("Food/Drink");
         nutritionCol.add("Calories");
         nutritionCol.add("Time");
         nutritionRow = new Vector<Object>();
         dataNutrition = new Vector<Object>();
-        dataNutrition.add(new Date());
         dataNutrition.add("");
         dataNutrition.add(new Integer(100));
         dataNutrition.add(new Time(0));
@@ -103,11 +114,9 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         
         workoutCol = new Vector<Object>();
         dataWorkout = new Vector<Object>();
-        workoutCol.add("Date");
         workoutCol.add("Workout Type");
         workoutCol.add("Calories Burned");
         workoutCol.add("Time");
-        dataWorkout.add(new Date());
         dataWorkout.add("Treadmill");
         dataWorkout.add(new Integer(100));
         dataWorkout.add(new Time(0));
@@ -128,21 +137,10 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         group.add(study);
         group.add(nutrition);
         group.add(workout);
-    //Setup Renderers for Date and Calories columns 
-        setupDateColumn(studyTable.getColumnModel().getColumn(0));
-        setupDateColumn(nutritionTable.getColumnModel().getColumn(0));
-        setupDateColumn(workoutTable.getColumnModel().getColumn(0));
-        setupCaloriesCol(nutritionTable.getColumnModel().getColumn(2));
-        setupCaloriesCol(workoutTable.getColumnModel().getColumn(2));
-        setupWorkTypeCol(workoutTable.getColumnModel().getColumn(1));
-        
-        System.out.println(studyTable.getValueAt(0, 0).toString());
-    }
     
-    //Setup date column
-    public void setupDateColumn(TableColumn col) {
-   // col.setPreferredWidth(100);
-    col.setCellRenderer(new DateRender());
+        setupCaloriesCol(nutritionTable.getColumnModel().getColumn(1));
+        setupCaloriesCol(workoutTable.getColumnModel().getColumn(1));
+        setupWorkTypeCol(workoutTable.getColumnModel().getColumn(0));
     }
     
     //Setup Calories combo list
@@ -172,7 +170,6 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     col.setCellEditor(new DefaultCellEditor(combo));
     col.setCellRenderer(new CaloriesRender());
     }
-
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -189,6 +186,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         study = new javax.swing.JRadioButton();
         nutrition = new javax.swing.JRadioButton();
         workout = new javax.swing.JRadioButton();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         rightPanel = new javax.swing.JPanel();
         addRow = new javax.swing.JButton();
         deleteRow = new javax.swing.JButton();
@@ -255,27 +253,30 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(activities, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(leftPanelLayout.createSequentialGroup()
+                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(leftPanelLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addComponent(study)
-                .addContainerGap(28, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(workout, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(nutrition, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+                    .addComponent(workout)
+                    .addComponent(nutrition)
+                    .addComponent(study))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         leftPanelLayout.setVerticalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(leftPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16)
                 .addComponent(activities, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(study)
                 .addGap(18, 18, 18)
                 .addComponent(nutrition)
                 .addGap(18, 18, 18)
                 .addComponent(workout)
-                .addContainerGap(294, Short.MAX_VALUE))
+                .addContainerGap(284, Short.MAX_VALUE))
         );
 
         mainFrame.getContentPane().add(leftPanel, java.awt.BorderLayout.LINE_START);
@@ -307,7 +308,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                 .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(deleteRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addRow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 16, Short.MAX_VALUE))
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -323,6 +324,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
         tabbedPane.setBackground(new java.awt.Color(255, 255, 255));
         tabbedPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        tabbedPane.setMaximumSize(new java.awt.Dimension(50, 32767));
         mainFrame.getContentPane().add(tabbedPane, java.awt.BorderLayout.CENTER);
 
         file.setText("File");
@@ -332,9 +334,37 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         menuBar.add(edit);
 
         usage.setText("Usage");
+        usage.addMenuListener(new javax.swing.event.MenuListener() {
+            public void menuCanceled(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuDeselected(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuSelected(javax.swing.event.MenuEvent evt) {
+                usageMenuSelected(evt);
+            }
+        });
+        usage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                usageActionPerformed(evt);
+            }
+        });
         menuBar.add(usage);
 
         author.setText("Author");
+        author.addMenuListener(new javax.swing.event.MenuListener() {
+            public void menuCanceled(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuDeselected(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuSelected(javax.swing.event.MenuEvent evt) {
+                authorMenuSelected(evt);
+            }
+        });
+        author.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                authorActionPerformed(evt);
+            }
+        });
         menuBar.add(author);
 
         mainFrame.setJMenuBar(menuBar);
@@ -342,7 +372,6 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Welcome to Student PAM");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMaximumSize(new java.awt.Dimension(32767, 32767));
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         setName("welcomeDialog"); // NOI18N
 
@@ -574,6 +603,25 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         scrollPane.setViewportView(workoutTable);
     }//GEN-LAST:event_workoutActionPerformed
 
+    private void deleteRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRowActionPerformed
+        // TODO add your handling code here:
+        if(study.isSelected()){
+            int row = studyTable.getSelectedRow();
+            if(row != -1)
+            studyModel.removeRow(row);
+        }
+        else if(nutrition.isSelected()){
+            int row = nutritionTable.getSelectedRow();
+            if(row != -1)
+            nutritionModel.removeRow(row);
+        }
+        else{
+            int row = workoutTable.getSelectedRow();
+            if(row != -1)
+            workoutModel.removeRow(row);
+        }
+    }//GEN-LAST:event_deleteRowActionPerformed
+
     private void addRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRowActionPerformed
         // TODO add your handling code here:
         Vector<Object> array = new Vector<Object>();
@@ -585,34 +633,76 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
             studyModel.addRow(array);
         }
         else if (nutrition.isSelected() || workout.isSelected()){
-             for(int i = 1; i < 4; i++){
+            for(int i = 1; i < 4; i++){
                 array.add(null);
             }
             if(nutrition.isSelected())
-                nutritionModel.addRow(array);
+            nutritionModel.addRow(array);
             else
-                workoutModel.addRow(array);
+            workoutModel.addRow(array);
         }
     }//GEN-LAST:event_addRowActionPerformed
 
-    private void deleteRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRowActionPerformed
+    private void authorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_authorActionPerformed
         // TODO add your handling code here:
-        if(study.isSelected()){
-            int row = studyTable.getSelectedRow();
-            if(row >= 0)
-                studyModel.removeRow(row);
-        }
-        else if(nutrition.isSelected()){
-             int row = nutritionTable.getSelectedRow();
-            if(row >= 0)
-                nutritionModel.removeRow(row);
-        }
-        else{
-            int row = workoutTable.getSelectedRow();
-            if(row >= 0)
-                workoutModel.removeRow(row);
-        }
-    }//GEN-LAST:event_deleteRowActionPerformed
+    }//GEN-LAST:event_authorActionPerformed
+
+    private void usageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usageActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_usageActionPerformed
+
+    private void usageMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_usageMenuSelected
+        // TODO add your handling code here:
+        String x = "Personal Activity Monitor is a software that manages person's daily activities.\n" +
+"It manages three categories:\n" +
+"1- How much time a person spends studying\n" +
+"2- How often a person works out and how much calories are burned\n" +
+"3- How much a person controls daily nutritional regime.\n" +
+"How to use PAM?\n" +
+"The user must have a personal account to access the personal information and display summary of past activities.\n" +
+"First: Sign up an account if you are a new use or sign in with your existing account\n" +
+"Second: A Day View of Study activity is the default display. \n" +
+"What will you see for each click?\n" +
+"There are three tables that represents the three activities for one day.\n" +
+"1- Study table has three columns:\n" +
+"	a. Date: It renders the current date\n" +
+"	b. Class: The user can enter the class name\n" +
+"	c. Time Taken: It displays how many hours the user spent studying. The user can edit the number.\n" +
+"2- Nutrition table has four columns:\n" +
+"	a. Date: It renders the current date\n" +
+"	b. Food/Drink: The user can enter the type of food or drink\n" +
+"	c. Calories: How much calories is in the serving of a particular food or drink. It's displayed as a dropdown menu\n" +
+"	d. Time: At what time the user had eaten or drunk\n" +
+"3- Workout table has four columns:\n" +
+"	a. Date: It renders the current date\n" +
+"	b. Workout type: It displays a list of various types of cardio machines and classes as a dropdown menu\n" +
+"	c. Calories: How much calories were burned after the exercise. It's displayed as a dropdown menu\n" +
+"	d. Time: At what time the user had worked out\n" +
+"How to view and edit the previous tables?\n" +
+"	1- Click on \"Study\" button to display Study table. Click on the cells to enter the required information\n" +
+"	2- Click on \"Nutrition\" button to display Nutrition table. Click on the cells to enter the required information\n" +
+"	3- Click on \" Workout \" button to display Workout table. Click on the cells to enter the required information";
+        JOptionPane.showMessageDialog(mainFrame, x, "How to use PAM", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_usageMenuSelected
+
+    private void authorMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_authorMenuSelected
+        // TODO add your handling code here:
+        JDialog authorDialog = new JDialog(mainFrame,"Authors");
+        JPanel photos = new JPanel();
+        JPanel names = new JPanel();
+        
+        JLabel karoon = new JLabel("Karoon Gayzagian");
+        JLabel dina = new JLabel("Dina Najeeb");
+        names.add(dina, BoxLayout.X_AXIS);
+        names.add(karoon, BoxLayout.X_AXIS);
+        authorDialog.add(photos);
+        authorDialog.add(names);
+        authorDialog.setMinimumSize(new Dimension(500, 500));
+        authorDialog.setVisible(true);
+      
+        
+    }//GEN-LAST:event_authorMenuSelected
 
     /**
      * @param args the command line arguments
@@ -671,6 +761,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private javax.swing.JPasswordField existUserPassword;
     private javax.swing.JTextField existUsername;
     private javax.swing.JMenu file;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JFrame mainFrame;
     private javax.swing.JMenuBar menuBar;
@@ -699,8 +790,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     public Component getTableCellRendererComponent(JTable t,
       Object value, boolean isSelected, boolean hasFocus, 
       int row, int col){
-        SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d, yyyy");
-         System.out.println("dataCellRender " + df.format((Date)value));
+        SimpleDateFormat df = new SimpleDateFormat("EEE, MMM d, yyyy");
         setValue(df.format((Date) value));
         return this;
     }
