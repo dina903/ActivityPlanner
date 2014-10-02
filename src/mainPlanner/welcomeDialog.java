@@ -9,7 +9,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -689,17 +692,36 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private void authorMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_authorMenuSelected
         // TODO add your handling code here:
         JDialog authorDialog = new JDialog(mainFrame,"Authors");
+        BoxLayout layoutDialog = new BoxLayout(authorDialog.getContentPane(), BoxLayout.Y_AXIS);
+        
+        authorDialog.setLayout(layoutDialog);
         JPanel photos = new JPanel();
         JPanel names = new JPanel();
-        
+        names.setBackground(Color.green);
+        photos.setMaximumSize(new Dimension(500, 250));
+        photos.setBackground(Color.red);
         JLabel karoon = new JLabel("Karoon Gayzagian");
+        karoon.setBounds(new Rectangle(20, 180, 150, 20));
+        karoon.setFont(new Font("Tahoma", Font.BOLD, 18));
         JLabel dina = new JLabel("Dina Najeeb");
-        names.add(dina, BoxLayout.X_AXIS);
-        names.add(karoon, BoxLayout.X_AXIS);
+        dina.setForeground(Color.red);
+        dina.setBounds(new Rectangle(80,180,150,20));
+        dina.setFont(new Font("Tahoma", Font.BOLD, 18));
+        JLabel karoonPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\karoon.jpg"));
+        karoonPic.setBounds(20, 20, 160, 160);
+        JLabel dinaPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\dina.jpg"));
+        validate();
+        dinaPic.setBounds(80, 20, 200, 200);
+        names.add(karoon);
+        names.add(dina);
+        photos.add(karoonPic);
+        photos.add(dinaPic);
         authorDialog.add(photos);
         authorDialog.add(names);
         authorDialog.setMinimumSize(new Dimension(500, 500));
+        authorDialog.setMaximumSize(new Dimension(500, 500));
         authorDialog.setVisible(true);
+        
       
         
     }//GEN-LAST:event_authorMenuSelected
