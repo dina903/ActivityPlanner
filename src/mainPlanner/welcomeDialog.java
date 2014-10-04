@@ -697,25 +697,28 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         authorDialog.setLayout(layoutDialog);
         JPanel photos = new JPanel();
         JPanel names = new JPanel();
-        names.setBackground(Color.green);
+        JLabel karoon = new JLabel("Karoon Gayzagian");
+        JLabel dina = new JLabel("Dina Najeeb");
+        JLabel karoonPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\karoon.jpg"));
+        JLabel dinaPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\dina.jpg"));
         photos.setMaximumSize(new Dimension(500, 250));
         photos.setBackground(Color.red);
-        JLabel karoon = new JLabel("Karoon Gayzagian");
-        karoon.setBounds(new Rectangle(20, 180, 150, 20));
+        
+    
         karoon.setFont(new Font("Tahoma", Font.BOLD, 18));
-        JLabel dina = new JLabel("Dina Najeeb");
+        
         dina.setForeground(Color.red);
-        dina.setBounds(new Rectangle(80,180,150,20));
-        dina.setFont(new Font("Tahoma", Font.BOLD, 18));
-        JLabel karoonPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\karoon.jpg"));
+        
+        
         karoonPic.setBounds(20, 20, 160, 160);
-        JLabel dinaPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\dina.jpg"));
+        
         validate();
         dinaPic.setBounds(80, 20, 200, 200);
         names.add(karoon);
         names.add(dina);
         photos.add(karoonPic);
         photos.add(dinaPic);
+        
         authorDialog.add(photos);
         authorDialog.add(names);
         authorDialog.setMinimumSize(new Dimension(500, 500));
