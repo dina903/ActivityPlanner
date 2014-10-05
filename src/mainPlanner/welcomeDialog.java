@@ -144,6 +144,14 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         setupCaloriesCol(nutritionTable.getColumnModel().getColumn(1));
         setupCaloriesCol(workoutTable.getColumnModel().getColumn(1));
         setupWorkTypeCol(workoutTable.getColumnModel().getColumn(0));
+        
+       /* leftPanel.setPreferredSize(new Dimension(400, leftPanel.getHeight()));
+        ImageIcon logo = new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\activitymonitornew.jpg");
+        JLabel logoLbl = new JLabel(logo);
+        logoLbl.setBounds(new Rectangle(400, 300));
+        
+        leftPanel.add(logoLbl);
+        validate();*/
     }
     
     //Setup Calories combo list
@@ -693,36 +701,42 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         // TODO add your handling code here:
         JDialog authorDialog = new JDialog(mainFrame,"Authors");
         BoxLayout layoutDialog = new BoxLayout(authorDialog.getContentPane(), BoxLayout.Y_AXIS);
-        
+        FlowLayout panelLayout = new FlowLayout(FlowLayout.CENTER,20,5);
+        FlowLayout namesLayout = new FlowLayout(FlowLayout.LEFT, 50, 5);
         authorDialog.setLayout(layoutDialog);
         JPanel photos = new JPanel();
         JPanel names = new JPanel();
+        JPanel emails = new JPanel();
         JLabel karoon = new JLabel("Karoon Gayzagian");
         JLabel dina = new JLabel("Dina Najeeb");
         JLabel karoonPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\karoon.jpg"));
         JLabel dinaPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\dina.jpg"));
+        JLabel karoonEmail = new JLabel("karoon80@hotmail.com");
+        JLabel dinaEmail = new JLabel("dina2552@gmail.com");
+        photos.setLayout(panelLayout);
+        names.setLayout(namesLayout);
+        emails.setLayout(panelLayout);
         photos.setMaximumSize(new Dimension(500, 250));
-        photos.setBackground(Color.red);
-        
+        names.setMaximumSize(new Dimension(500, 250));
     
         karoon.setFont(new Font("Tahoma", Font.BOLD, 18));
-        
-        dina.setForeground(Color.red);
-        
-        
-        karoonPic.setBounds(20, 20, 160, 160);
-        
+        dina.setFont(new Font("Tahoma", Font.BOLD, 18));
+        dinaEmail.setFont(new Font("Tahoma", Font.BOLD, 18));
+        karoonEmail.setFont(new Font("Tahoma", Font.BOLD, 18));
         validate();
-        dinaPic.setBounds(80, 20, 200, 200);
         names.add(karoon);
         names.add(dina);
         photos.add(karoonPic);
         photos.add(dinaPic);
+        emails.add(karoonEmail);
+        emails.add(dinaEmail);
         
         authorDialog.add(photos);
         authorDialog.add(names);
+        authorDialog.add(emails);
         authorDialog.setMinimumSize(new Dimension(500, 500));
         authorDialog.setMaximumSize(new Dimension(500, 500));
+        authorDialog.setPreferredSize(new Dimension(500, 500));
         authorDialog.setVisible(true);
         
       
