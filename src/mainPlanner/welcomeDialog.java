@@ -719,9 +719,9 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         JPanel emails = new JPanel();
         JLabel karoon = new JLabel("Karoon Gayzagian");
         JLabel dina = new JLabel("Dina Najeeb");
-        JLabel karoonPic = new JLabel(new ImageIcon("src\\karoon.jpg"));
+        JLabel karoonPic = new JLabel(new ImageIcon("..\\src\\karoon.jpg"));
       
-        JLabel dinaPic = new JLabel(new ImageIcon("src\\dina.jpg"));
+        JLabel dinaPic = new JLabel(new ImageIcon("..\\src\\dina.jpg"));
         JLabel karoonEmail = new JLabel("karoon80@hotmail.com");
         JLabel dinaEmail = new JLabel("dina2552@yahoo.com");
         photos.setLayout(panelLayout);
