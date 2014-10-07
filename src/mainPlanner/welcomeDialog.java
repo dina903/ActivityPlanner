@@ -158,7 +158,6 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         calLogSum = new JLabel("Log Summary");
         weekSummary.add(calWeekSum);
         logSummary.add(calLogSum);
-        //Insert the logo at the bottom of left panel
         leftPanel.setPreferredSize(new Dimension(200, leftPanel.getHeight()));
         logoLabel.setText("");
         validate();
