@@ -53,6 +53,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 public class welcomeDialog extends javax.swing.JDialog implements Serializable {
+    //Data Fields
      JTable studyTable, nutritionTable, workoutTable;
      DefaultTableModel studyModel, nutritionModel, workoutModel;
      JPanel weekSummary, logSummary, southPanel;
@@ -68,6 +69,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         super(parent, modal);
         initComponents();
        try {
+        this.setIconImage(ImageIO.read(new File("src\\activitymonitornew.jpg")));
         mainFrame.setIconImage(ImageIO.read(new File("src\\activitymonitornew.jpg")));
     } catch (IOException e) {
         e.printStackTrace();
