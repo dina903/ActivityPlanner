@@ -1,10 +1,10 @@
 /**
- * @author Dina & Karoon
+ * @author Dina & Karoon 
  */
 
 package mainPlanner;
 
-import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
