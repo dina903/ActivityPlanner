@@ -68,7 +68,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         super(parent, modal);
         initComponents();
        try {
-        mainFrame.setIconImage(ImageIO.read(new File("C:\\Users\\Karoon\\Documents\\Comp 585\\activitymonitor.jpg")));
+        mainFrame.setIconImage(ImageIO.read(new File("src\\activitymonitornew.jpg")));
     } catch (IOException e) {
         e.printStackTrace();
     }
