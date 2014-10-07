@@ -158,9 +158,6 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         logSummary.add(calLogSum);
         //Insert the logo at the bottom of left panel
         leftPanel.setPreferredSize(new Dimension(200, leftPanel.getHeight()));
-        ImageIcon logo = new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\activitymonitornew.jpg");
-        logoLabel.setIcon(logo);
-       // logoLabel.setPreferredSize(new Dimension(200, 200));
         logoLabel.setText("");
         validate();
     }
@@ -270,6 +267,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
             }
         });
 
+        logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/activitymonitornew.jpg"))); // NOI18N
         logoLabel.setText("jLabel1");
         logoLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         logoLabel.setIconTextGap(0);
@@ -312,8 +310,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                 .addComponent(nutrition)
                 .addGap(18, 18, 18)
                 .addComponent(workout)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addComponent(logoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                .addComponent(logoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         mainFrame.getContentPane().add(leftPanel, java.awt.BorderLayout.LINE_START);
@@ -720,8 +718,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         JPanel emails = new JPanel();
         JLabel karoon = new JLabel("Karoon Gayzagian");
         JLabel dina = new JLabel("Dina Najeeb");
-        JLabel karoonPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\karoon.jpg"));
-        JLabel dinaPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\dina.jpg"));
+        JLabel karoonPic = new JLabel(new ImageIcon("src\\karoon.jpg"));
+        JLabel dinaPic = new JLabel(new ImageIcon("src\\dina.jpg"));
         JLabel karoonEmail = new JLabel("karoon80@hotmail.com");
         JLabel dinaEmail = new JLabel("dina2552@yahoo.com");
         photos.setLayout(panelLayout);
