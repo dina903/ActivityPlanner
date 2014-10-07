@@ -56,6 +56,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
      JTable studyTable, nutritionTable, workoutTable;
      DefaultTableModel studyModel, nutritionModel, workoutModel;
      JPanel weekSummary, logSummary, southPanel;
+     JLabel calWeekSum, calLogSum;
      ButtonGroup group;
      JScrollPane scrollPane;
      BufferedImage icon;
@@ -75,16 +76,19 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         signInPanel.setVisible(false);
         signUpPanel.setVisible(false);
         mainFrame.setVisible(false);
+        //South panel includes Submit button
         southPanel = new JPanel();
         mainFrame.getContentPane().add(southPanel, BorderLayout.PAGE_END);
         JButton submit = new JButton("Submit");
         southPanel.add(submit, BorderLayout.LINE_END);
         submit.setForeground(Color.red);
         submit.setFont(new Font("Tahoma", Font.BOLD, 18));
+        //JDateChooser is on the top of left panel
         jDateChooser1.setDate(new Date());
         System.out.println(jDateChooser1.getDate());
         
         study.setSelected(true);
+        //Create Study table and add it to JScrollPane
         dataStudy = new Vector<Object>();
         studyColumns = new Vector <Object>();
         studyColumns.add("Class");
@@ -100,7 +104,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         tabbedPane.addTab("Day View", scrollPane);
         studyTable.getParent().setBackground(Color.white);
         studyModel.addTableModelListener(new modelListener());
-        
+        //Create Nutrition table
         nutritionCol = new Vector<Object>();
         nutritionCol.add("Food/Drink");
         nutritionCol.add("Calories");
@@ -114,7 +118,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         nutritionModel = new DefaultTableModel(nutritionRow,nutritionCol);
         nutritionTable = new JTable(nutritionModel);
         nutritionTable.setShowGrid(true);
-        
+        //Create Workout table
         workoutCol = new Vector<Object>();
         dataWorkout = new Vector<Object>();
         workoutCol.add("Workout Type");
@@ -128,7 +132,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         workoutModel = new DefaultTableModel(workoutRow,workoutCol);
         workoutTable = new JTable(workoutModel);
         workoutTable.setShowGrid(true);
-        
+        //Instantiate a panel for each summary and add each one to a tab
         weekSummary = new JPanel();
         weekSummary.setBackground(Color.white);
         logSummary = new JPanel();
@@ -140,18 +144,25 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         group.add(study);
         group.add(nutrition);
         group.add(workout);
-    
+        //The following three calls are for drop down menu for Calories and machines
         setupCaloriesCol(nutritionTable.getColumnModel().getColumn(1));
         setupCaloriesCol(workoutTable.getColumnModel().getColumn(1));
         setupWorkTypeCol(workoutTable.getColumnModel().getColumn(0));
         
-       /* leftPanel.setPreferredSize(new Dimension(400, leftPanel.getHeight()));
+        BoxLayout weekLayout = new BoxLayout(weekSummary, BoxLayout.Y_AXIS);
+        BoxLayout logLayout = new BoxLayout(logSummary, BoxLayout.Y_AXIS);
+        //Add a label to each summary panel to insert info
+        calWeekSum = new JLabel("Week Summary");
+        calLogSum = new JLabel("Log Summary");
+        weekSummary.add(calWeekSum);
+        logSummary.add(calLogSum);
+        //Insert the logo at the bottom of left panel
+        leftPanel.setPreferredSize(new Dimension(200, leftPanel.getHeight()));
         ImageIcon logo = new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\activitymonitornew.jpg");
-        JLabel logoLbl = new JLabel(logo);
-        logoLbl.setBounds(new Rectangle(400, 300));
-        
-        leftPanel.add(logoLbl);
-        validate();*/
+        logoLabel.setIcon(logo);
+       // logoLabel.setPreferredSize(new Dimension(200, 200));
+        logoLabel.setText("");
+        validate();
     }
     
     //Setup Calories combo list
@@ -198,6 +209,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         nutrition = new javax.swing.JRadioButton();
         workout = new javax.swing.JRadioButton();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        logoLabel = new javax.swing.JLabel();
         rightPanel = new javax.swing.JPanel();
         addRow = new javax.swing.JButton();
         deleteRow = new javax.swing.JButton();
@@ -258,21 +270,34 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
             }
         });
 
+        logoLabel.setText("jLabel1");
+        logoLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        logoLabel.setIconTextGap(0);
+        logoLabel.setMaximumSize(new java.awt.Dimension(200, 250));
+        logoLabel.setMinimumSize(new java.awt.Dimension(200, 250));
+        logoLabel.setPreferredSize(new java.awt.Dimension(200, 250));
+        logoLabel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(activities, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(leftPanelLayout.createSequentialGroup()
-                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(leftPanelLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(workout)
-                    .addComponent(nutrition)
-                    .addComponent(study))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(leftPanelLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(workout)
+                            .addComponent(nutrition)
+                            .addComponent(study)))
+                    .addGroup(leftPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(logoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(21, Short.MAX_VALUE))
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         leftPanelLayout.setVerticalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,7 +312,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                 .addComponent(nutrition)
                 .addGap(18, 18, 18)
                 .addComponent(workout)
-                .addContainerGap(284, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(logoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         mainFrame.getContentPane().add(leftPanel, java.awt.BorderLayout.LINE_START);
@@ -603,17 +629,6 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         mainFrame.setVisible(true);
     }//GEN-LAST:event_signUpbtnActionPerformed
 
-    private void nutritionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nutritionActionPerformed
-        // TODO add your handling code here:
-       // evt.getSource();
-        scrollPane.setViewportView(nutritionTable);
-    }//GEN-LAST:event_nutritionActionPerformed
-
-    private void workoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_workoutActionPerformed
-        // TODO add your handling code here:
-        scrollPane.setViewportView(workoutTable);
-    }//GEN-LAST:event_workoutActionPerformed
-
     private void deleteRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRowActionPerformed
         // TODO add your handling code here:
         if(study.isSelected()){
@@ -636,7 +651,6 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private void addRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRowActionPerformed
         // TODO add your handling code here:
         Vector<Object> array = new Vector<Object>();
-        array.add(0, new Date());
         if(study.isSelected()){
             for(int i = 1; i < 3; i++){
                 array.add(null);
@@ -665,35 +679,32 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
     private void usageMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_usageMenuSelected
         // TODO add your handling code here:
-        String x = "Personal Activity Monitor is a software that manages person's daily activities.\n" +
-"It manages three categories:\n" +
+        String x = "Personal Activity Monitor is a software that manages person's daily activities. It manages three categories:\n" +
 "1- How much time a person spends studying\n" +
 "2- How often a person works out and how much calories are burned\n" +
 "3- How much a person controls daily nutritional regime.\n" +
 "How to use PAM?\n" +
 "The user must have a personal account to access the personal information and display summary of past activities.\n" +
-"First: Sign up an account if you are a new use or sign in with your existing account\n" +
+"First: Sign up an account if you are a new use or sign in with your existing account credentials\n" +
 "Second: A Day View of Study activity is the default display. \n" +
 "What will you see for each click?\n" +
-"There are three tables that represents the three activities for one day.\n" +
+"There are three tables that represent the three activities for one day.\n" +
 "1- Study table has three columns:\n" +
-"	a. Date: It renders the current date\n" +
-"	b. Class: The user can enter the class name\n" +
-"	c. Time Taken: It displays how many hours the user spent studying. The user can edit the number.\n" +
+"	a. Class: The user can enter the class name\n" +
+"	b. Time Taken: It displays how many hours the user spent studying. The user can edit the number.\n" +
 "2- Nutrition table has four columns:\n" +
-"	a. Date: It renders the current date\n" +
-"	b. Food/Drink: The user can enter the type of food or drink\n" +
-"	c. Calories: How much calories is in the serving of a particular food or drink. It's displayed as a dropdown menu\n" +
-"	d. Time: At what time the user had eaten or drunk\n" +
+"	a. Food/Drink: The user can enter the type of food or drink\n" +
+"	b. Calories: How much calories is in the serving of a particular food or drink. It's displayed as a dropdown menu\n" +
+"	c. Time: At what time the user had eaten or drunk\n" +
 "3- Workout table has four columns:\n" +
-"	a. Date: It renders the current date\n" +
-"	b. Workout type: It displays a list of various types of cardio machines and classes as a dropdown menu\n" +
-"	c. Calories: How much calories were burned after the exercise. It's displayed as a dropdown menu\n" +
-"	d. Time: At what time the user had worked out\n" +
+"	a. Workout type: It displays a list of various types of cardio machines and classes as a dropdown menu\n" +
+"	b. Calories: How much calories were burned after the exercise. It's displayed as a dropdown menu\n" +
+"	c. Time: At what time the user had worked out\n" +
 "How to view and edit the previous tables?\n" +
 "	1- Click on \"Study\" button to display Study table. Click on the cells to enter the required information\n" +
 "	2- Click on \"Nutrition\" button to display Nutrition table. Click on the cells to enter the required information\n" +
-"	3- Click on \" Workout \" button to display Workout table. Click on the cells to enter the required information";
+"	3- Click on \" Workout \" button to display Workout table. Click on the cells to enter the required information\n" +
+"	You can add or delete a table entry by selecting a row and pressing \"Add Row\" or \"Delete Row\".";
         JOptionPane.showMessageDialog(mainFrame, x, "How to use PAM", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_usageMenuSelected
 
@@ -712,7 +723,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         JLabel karoonPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\karoon.jpg"));
         JLabel dinaPic = new JLabel(new ImageIcon("C:\\Users\\Karoon\\Documents\\Comp 585\\dina.jpg"));
         JLabel karoonEmail = new JLabel("karoon80@hotmail.com");
-        JLabel dinaEmail = new JLabel("dina2552@gmail.com");
+        JLabel dinaEmail = new JLabel("dina2552@yahoo.com");
         photos.setLayout(panelLayout);
         names.setLayout(namesLayout);
         emails.setLayout(panelLayout);
@@ -742,6 +753,17 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
       
         
     }//GEN-LAST:event_authorMenuSelected
+
+    private void workoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_workoutActionPerformed
+        // TODO add your handling code here:
+        scrollPane.setViewportView(workoutTable);
+    }//GEN-LAST:event_workoutActionPerformed
+
+    private void nutritionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nutritionActionPerformed
+        // TODO add your handling code here:
+        // evt.getSource();
+        scrollPane.setViewportView(nutritionTable);
+    }//GEN-LAST:event_nutritionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -802,6 +824,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private javax.swing.JMenu file;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JPanel leftPanel;
+    private javax.swing.JLabel logoLabel;
     private javax.swing.JFrame mainFrame;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JRadioButton nutrition;
