@@ -69,8 +69,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         super(parent, modal);
         initComponents();
        try {
-        this.setIconImage(ImageIO.read(new File("src\\activitymonitornew.jpg")));
-        mainFrame.setIconImage(ImageIO.read(new File("src\\activitymonitornew.jpg")));
+        this.setIconImage(ImageIO.read(new File("..\\activitymonitornew.jpg")));
+        mainFrame.setIconImage(ImageIO.read(new File("..\\activitymonitornew.jpg")));
     } catch (IOException e) {
         e.printStackTrace();
     }
@@ -719,9 +719,9 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         JPanel emails = new JPanel();
         JLabel karoon = new JLabel("Karoon Gayzagian");
         JLabel dina = new JLabel("Dina Najeeb");
-        JLabel karoonPic = new JLabel(new ImageIcon("..\\src\\karoon.jpg"));
+        JLabel karoonPic = new JLabel(new ImageIcon("..\\karoon.jpg"));
       
-        JLabel dinaPic = new JLabel(new ImageIcon("..\\src\\dina.jpg"));
+        JLabel dinaPic = new JLabel(new ImageIcon("..\\dina.jpg"));
         JLabel karoonEmail = new JLabel("karoon80@hotmail.com");
         JLabel dinaEmail = new JLabel("dina2552@yahoo.com");
         photos.setLayout(panelLayout);
