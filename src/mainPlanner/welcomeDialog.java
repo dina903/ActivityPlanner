@@ -268,7 +268,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
             }
         });
 
-        logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/activitymonitornew.jpg"))); // NOI18N
+        logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/activitymonitornew.jpg"))); // NOI18N
         logoLabel.setText("jLabel1");
         logoLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         logoLabel.setIconTextGap(0);
@@ -719,9 +719,9 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         JPanel emails = new JPanel();
         JLabel karoon = new JLabel("Karoon Gayzagian");
         JLabel dina = new JLabel("Dina Najeeb");
-        JLabel karoonPic = new JLabel(new ImageIcon("..\\karoon.jpg"));
+        JLabel karoonPic = new JLabel(new ImageIcon("src\\images\\karoon.jpg"));
       
-        JLabel dinaPic = new JLabel(new ImageIcon("..\\dina.jpg"));
+        JLabel dinaPic = new JLabel(new ImageIcon("src\\images\\dina.jpg"));
         JLabel karoonEmail = new JLabel("karoon80@hotmail.com");
         JLabel dinaEmail = new JLabel("dina2552@yahoo.com");
         photos.setLayout(panelLayout);
@@ -880,6 +880,7 @@ class modelListener implements TableModelListener{
       int netRowChange = lastRowChanged - firstRowChanged +1;
       switch (e.getType()) {
         case TableModelEvent.INSERT :  { System.out.println("insert");
+          //  for(int i =firstRowChanged; i )
           /*  if(colChanged == 0){
                 
             }*/
