@@ -428,7 +428,12 @@
                           <Component id="existUsername" min="-2" pref="147" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="109" max="32767" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="wrongUsername" min="-2" max="-2" attributes="0"/>
+                      <Component id="wrongPassword" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
@@ -444,11 +449,13 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="existUsername" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="usernameLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="wrongUsername" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="existUserPassword" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="passwordLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="wrongPassword" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
                   <Component id="signInbtn" min="-2" max="-2" attributes="0"/>
@@ -475,8 +482,14 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JPasswordField" name="existUserPassword">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="existUserPasswordActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="existUsername">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="existUsernameActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="signInbtn">
           <Properties>
@@ -485,6 +498,22 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="signInbtnActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="wrongUsername">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="ff" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Wrong Username"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="wrongPassword">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="ff" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Wrong Password"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

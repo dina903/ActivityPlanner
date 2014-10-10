@@ -1,6 +1,4 @@
-/**
- * @author Dina & Karoon
- */
+/** @author Dina & Karoon */
 package mainPlanner;
 
 import com.toedter.calendar.JDateChooser;
@@ -54,7 +52,7 @@ import javax.swing.table.TableColumnModel;
 public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
     //Data Fields
-
+    User pamUser = new User("Test main", "Test main");
     static JTable studyTable, nutritionTable, workoutTable;
     DefaultTableModel studyModel, nutritionModel, workoutModel;
     JPanel weekSummary, logSummary, southPanel;
@@ -81,12 +79,12 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         signUpPanel.setVisible(false);
         mainFrame.setVisible(false);
         //South panel includes Submit button
-        southPanel = new JPanel();
-        mainFrame.getContentPane().add(southPanel, BorderLayout.PAGE_END);
-        JButton save = new JButton("Save");
-        southPanel.add(save, BorderLayout.LINE_END);
-        save.setForeground(Color.red);
-        save.setFont(new Font("Tahoma", Font.BOLD, 18));
+        //southPanel = new JPanel();
+        //mainFrame.getContentPane().add(southPanel, BorderLayout.PAGE_END);
+        //JButton save = new JButton("Save");
+        // southPanel.add(save, BorderLayout.LINE_END);
+        // save.setForeground(Color.red);
+        // save.setFont(new Font("Tahoma", Font.BOLD, 18));
         //JDateChooser is on the top of left panel
         jDateChooser1.setDate(new Date());
         System.out.println(jDateChooser1.getDate());
@@ -163,9 +161,17 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         logSummary.add(calLogSum);
         leftPanel.setPreferredSize(new Dimension(200, leftPanel.getHeight()));
         logoLabel.setText("");
+        //dina's stuff
+        wrongPassword.setVisible(false);
+        wrongUsername.setVisible(false);
+        
+        //end dina's stuff
+        
+        
         validate();
 
     }
+    
 
     //Setup Calories combo list
     public void setupCaloriesCol(TableColumn col) {
@@ -233,6 +239,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         existUserPassword = new javax.swing.JPasswordField();
         existUsername = new javax.swing.JTextField();
         signInbtn = new javax.swing.JButton();
+        wrongUsername = new javax.swing.JLabel();
+        wrongPassword = new javax.swing.JLabel();
         signUpPanel = new javax.swing.JPanel();
         signUpUsername = new javax.swing.JLabel();
         SignUppasswordLbl = new javax.swing.JLabel();
@@ -482,12 +490,30 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         passwordLbl.setFont(new java.awt.Font("Calibri", 0, 12)); // NOI18N
         passwordLbl.setText("Password:");
 
+        existUserPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                existUserPasswordActionPerformed(evt);
+            }
+        });
+
+        existUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                existUsernameActionPerformed(evt);
+            }
+        });
+
         signInbtn.setText("Sign In");
         signInbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 signInbtnActionPerformed(evt);
             }
         });
+
+        wrongUsername.setForeground(new java.awt.Color(255, 0, 0));
+        wrongUsername.setText("Wrong Username");
+
+        wrongPassword.setForeground(new java.awt.Color(255, 0, 0));
+        wrongPassword.setText("Wrong Password");
 
         javax.swing.GroupLayout signInPanelLayout = new javax.swing.GroupLayout(signInPanel);
         signInPanel.setLayout(signInPanelLayout);
@@ -504,7 +530,11 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                         .addComponent(usernameLbl)
                         .addGap(18, 18, 18)
                         .addComponent(existUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(signInPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(wrongUsername)
+                    .addComponent(wrongPassword))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signInPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(signInbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -516,11 +546,13 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                 .addGap(53, 53, 53)
                 .addGroup(signInPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(existUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(usernameLbl))
+                    .addComponent(usernameLbl)
+                    .addComponent(wrongUsername))
                 .addGap(19, 19, 19)
                 .addGroup(signInPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(existUserPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(passwordLbl))
+                    .addComponent(passwordLbl)
+                    .addComponent(wrongPassword))
                 .addGap(42, 42, 42)
                 .addComponent(signInbtn)
                 .addContainerGap(75, Short.MAX_VALUE))
@@ -611,19 +643,36 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     }//GEN-LAST:event_btnNewUserActionPerformed
 
     private void signInbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInbtnActionPerformed
-        /* this part is not tested
-         User pamUser = new User("Test main", "Test main");
-         User retrieveUser = pamUser.deserialize();
-         System.out.println("username: " + retrieveUser.getUserName() + " & password: " + retrieveUser.getUserPassword());*/
-        setVisible(false);
-        mainFrame.setVisible(true);
+        
+        User retrieveUser = pamUser.deserialize();
+        String tempUsername = retrieveUser.getUserName();
+        String tempUserpswd = retrieveUser.getUserPassword();
+        String tempActualpswd = new String(existUserPassword.getPassword());
+        if ((tempUsername.equals(existUsername.getText())) && (tempUserpswd.equals(tempActualpswd)) ) {
+            System.out.println("username and password matched");
+            //display the pam main screen
+            setVisible(false);
+            mainFrame.setVisible(true);
+        } else {
+            System.out.println("username and password didn't match, Retry!");
+            //clean the fields and let the user retry
+            existUsername.setText("");
+            existUserPassword.setText("");
+            if (!tempUsername.equals(existUsername.getText())) {
+                wrongUsername.setVisible(true);
+            }
+            if (!tempUserpswd.equals(existUserPassword.getPassword())) {
+                wrongPassword.setVisible(true);
+            }
+        }
+        
     }//GEN-LAST:event_signInbtnActionPerformed
 
     private void signUpbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signUpbtnActionPerformed
         User pamUser = new User("Test main", "Test main");
         String username = NewUsername.getText().toString(); //get username textfield data
-        String userpassword = NewUserPassword.getPassword().toString(); //get password field data
-
+        //String userpassword = NewUserPassword.getPassword().toString(); //get password field data
+        String userpassword = new String(NewUserPassword.getPassword());
         pamUser.setUserName(username); // set user username
         pamUser.setUserPassword(userpassword); //set user password
         pamUser.initSave(); //save file
@@ -770,6 +819,23 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         scrollPane.setViewportView(nutritionTable);
     }//GEN-LAST:event_nutritionActionPerformed
 
+    private void existUserPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_existUserPasswordActionPerformed
+        // TODO add your handling code here:
+        wrongPassword.setVisible(false);
+        wrongUsername.setVisible(false);
+    }//GEN-LAST:event_existUserPasswordActionPerformed
+
+    private void existUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_existUsernameActionPerformed
+        // TODO add your handling code here:
+        
+        System.out.print("action on txtfield ");
+        
+        if (existUsername.isFocusOwner()) {
+            wrongPassword.setVisible(false);
+            wrongUsername.setVisible(false);
+        }
+    }//GEN-LAST:event_existUsernameActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -849,6 +915,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private javax.swing.JLabel welcomeLbl2;
     private javax.swing.JPanel welcomePanel;
     private javax.swing.JRadioButton workout;
+    private javax.swing.JLabel wrongPassword;
+    private javax.swing.JLabel wrongUsername;
     // End of variables declaration//GEN-END:variables
 }
 
