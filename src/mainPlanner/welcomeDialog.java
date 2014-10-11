@@ -1,4 +1,6 @@
-/** @author Dina & Karoon */
+/**
+ * @author Dina & Karoon
+ */
 package mainPlanner;
 
 import com.toedter.calendar.JDateChooser;
@@ -19,6 +21,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Vector;
@@ -39,6 +43,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -48,11 +54,12 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import static mainPlanner.welcomeDialog.studyTable;
 
 public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
     //Data Fields
-    User pamUser = new User("Test main", "Test main");
+    User pamUser = new User("Test main", "Test main", 0);
     static JTable studyTable, nutritionTable, workoutTable;
     DefaultTableModel studyModel, nutritionModel, workoutModel;
     JPanel weekSummary, logSummary, southPanel;
@@ -99,10 +106,10 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         dataStudy.add("");
         dataStudy.add(new Integer(1));
         studyRow.add(dataStudy);
-        
+
         studyModel = new DefaultTableModel(studyRow, studyColumns);
         studyTable = new JTable(studyModel);
-        System.out.println("Table columns "+studyTable.getModel().getColumnCount());
+        System.out.println("Table columns " + studyTable.getModel().getColumnCount());
         studyTable.setShowGrid(true);
         scrollPane = new JScrollPane(studyTable);
         tabbedPane.addTab("Day View", scrollPane);
@@ -142,7 +149,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         logSummary.setBackground(Color.white);
         tabbedPane.addTab("Week View", weekSummary);
         tabbedPane.addTab("Log View", logSummary);
-
+        tabbedPane.addChangeListener(changeListener);
         group = new ButtonGroup();
         group.add(study);
         group.add(nutrition);
@@ -161,18 +168,87 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         logSummary.add(calLogSum);
         leftPanel.setPreferredSize(new Dimension(200, leftPanel.getHeight()));
         logoLabel.setText("");
+
         //dina's stuff
         wrongPassword.setVisible(false);
         wrongUsername.setVisible(false);
-        
+        totalWeeklyCal = 0;
+        tableType = 0;
+        weekCounter = 0;
+        weekStudyHours = 0;
+        loggedUser = new User("Test main", "Test main", 0);
+        newUserSum = new UserSummary(0, "Construct Username", 0);
         //end dina's stuff
-        
-        
+
         validate();
 
     }
-    
+    ChangeListener changeListener = new ChangeListener() {
+      public void stateChanged(ChangeEvent changeEvent) {
+        JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
+        int index = sourceTabbedPane.getSelectedIndex();
+        String tabName = sourceTabbedPane.getTitleAt(index);
+        System.out.println("Tab changed to: " + sourceTabbedPane.getTitleAt(index));
+        if (tabName.equals("Week View")) {
+            calcSummary();
+            String msg = "<html><center>User " + loggedUser.getUserName() + " Studied for " + weekStudyHours + " Hours..";
+            if (weekStudyHours <= 10) {
+                msg += "<br>You Can Do Better</center></html>";
+            } else {
+                msg += "<br>Well Done!</center></html>";
+            }
+            calWeekSum.setFont(new Font("Serif", Font.PLAIN, 24));
+            calWeekSum.setText(msg);
+            
+        } else if (tabName.equals("Log View")) {
+            
+        }
+      }
+    };
 
+    public void findWeek() {
+        System.out.println("Updating week counter");
+        Calendar currentWeek = Calendar.getInstance();
+        System.out.println("Current week of year is : " + currentWeek.get(Calendar.WEEK_OF_YEAR));
+        int newWeek = currentWeek.get(Calendar.WEEK_OF_YEAR);
+
+        if (newWeek == loggedUser.getWeekOfYear()) {
+            System.out.println("In the same week");
+            weekCounter = newWeek;
+        } else if (newWeek > loggedUser.getWeekOfYear()) {
+            weekCounter = newWeek - loggedUser.getWeekOfYear();
+        } else {
+            //deal with it later (check for year)
+        }
+        newUserSum.setWeekNum(weekCounter);
+    }
+
+    public static void calcSummary() { //here add calories and set the object
+        switch (tableType) {
+            case 0:
+                studyTable.getModel();
+                int rows = studyTable.getRowCount();
+                int tempTotal = 0;
+                for (int i = 0; i < rows; i++) {
+                    if (studyTable.getValueAt(i, 1) != null) {
+                        tempTotal += (Integer.parseInt(studyTable.getValueAt(i, 1).toString()));
+                    }
+                }
+                weekStudyHours += tempTotal;
+                
+                System.out.println("total hours studied: " + weekStudyHours);
+                break;
+            case 1:
+                System.out.print("Nutrition Table Selected");
+                break;
+            case 2:
+                System.out.print("Workout Table Selected");
+                break;
+            default:
+                break;
+        }
+    }
+    
     //Setup Calories combo list
     public void setupCaloriesCol(TableColumn col) {
         Vector<Integer> cals = new Vector<Integer>();
@@ -262,6 +338,11 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         study.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         study.setForeground(new java.awt.Color(255, 0, 51));
         study.setText("Study");
+        study.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                studyActionPerformed(evt);
+            }
+        });
 
         nutrition.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         nutrition.setForeground(new java.awt.Color(255, 0, 51));
@@ -643,13 +724,15 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     }//GEN-LAST:event_btnNewUserActionPerformed
 
     private void signInbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInbtnActionPerformed
-        
+
         User retrieveUser = pamUser.deserialize();
         String tempUsername = retrieveUser.getUserName();
         String tempUserpswd = retrieveUser.getUserPassword();
         String tempActualpswd = new String(existUserPassword.getPassword());
-        if ((tempUsername.equals(existUsername.getText())) && (tempUserpswd.equals(tempActualpswd)) ) {
+        if ((tempUsername.equals(existUsername.getText())) && (tempUserpswd.equals(tempActualpswd))) {
             System.out.println("username and password matched");
+            loggedUser = retrieveUser;
+            findWeek(); //set the week for the new object
             //display the pam main screen
             setVisible(false);
             mainFrame.setVisible(true);
@@ -665,19 +748,28 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                 wrongPassword.setVisible(true);
             }
         }
-        
+
     }//GEN-LAST:event_signInbtnActionPerformed
 
     private void signUpbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signUpbtnActionPerformed
-        User pamUser = new User("Test main", "Test main");
+        String initDate = jDateChooser1.getDate().toString();
+        System.out.println("Initial Date: " + initDate);
+        Calendar now = Calendar.getInstance();
+        System.out.println("Current week of year is : " + now.get(Calendar.WEEK_OF_YEAR));
+        int weekNo = now.get(Calendar.WEEK_OF_YEAR);
+
+        User pamUser = new User("Test main", "Test main", weekNo);
+
         String username = NewUsername.getText().toString(); //get username textfield data
         //String userpassword = NewUserPassword.getPassword().toString(); //get password field data
         String userpassword = new String(NewUserPassword.getPassword());
         pamUser.setUserName(username); // set user username
         pamUser.setUserPassword(userpassword); //set user password
+        pamUser.setWeekOfYear(weekNo);
         pamUser.initSave(); //save file
         pamUser.printInfo(); //print user information
-
+        loggedUser = pamUser;
+        findWeek();//set the weekly counter for the new object
         setVisible(false);
         mainFrame.setVisible(true);
     }//GEN-LAST:event_signUpbtnActionPerformed
@@ -778,7 +870,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
         JLabel dinaPic = new JLabel(new ImageIcon("src\\images\\dina.jpg"));
         JLabel karoonEmail = new JLabel("karoon80@hotmail.com");
-        JLabel dinaEmail = new JLabel("dina2552@yahoo.com");
+        JLabel dinaEmail = new JLabel("dina_2552@yahoo.com");
         photos.setLayout(panelLayout);
         names.setLayout(namesLayout);
         emails.setLayout(panelLayout);
@@ -810,12 +902,15 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
     private void workoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_workoutActionPerformed
         // TODO add your handling code here:
+        tableType = 2;
+        System.out.println("Workout is selected: ");
         scrollPane.setViewportView(workoutTable);
     }//GEN-LAST:event_workoutActionPerformed
 
     private void nutritionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nutritionActionPerformed
         // TODO add your handling code here:
-        // evt.getSource();
+        tableType = 1;
+        System.out.println("Nutrition is selected: ");
         scrollPane.setViewportView(nutritionTable);
     }//GEN-LAST:event_nutritionActionPerformed
 
@@ -827,14 +922,22 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
     private void existUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_existUsernameActionPerformed
         // TODO add your handling code here:
-        
+
         System.out.print("action on txtfield ");
-        
+
         if (existUsername.isFocusOwner()) {
             wrongPassword.setVisible(false);
             wrongUsername.setVisible(false);
         }
     }//GEN-LAST:event_existUsernameActionPerformed
+
+    private void studyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studyActionPerformed
+        // TODO add your handling code here:
+        tableType = 0;
+        System.out.println("Study is selected: ");
+        scrollPane.setViewportView(studyTable);
+
+    }//GEN-LAST:event_studyActionPerformed
 
     /**
      * @param args the command line arguments
@@ -876,6 +979,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                 });
                 dialog.setVisible(true);
                 studyTable.getModel().addTableModelListener(new modelListener(studyTable));
+                nutritionTable.getModel().addTableModelListener(new modelListener(nutritionTable));
+                workoutTable.getModel().addTableModelListener(new modelListener(workoutTable));
             }
         });
     }
@@ -918,6 +1023,11 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private javax.swing.JLabel wrongPassword;
     private javax.swing.JLabel wrongUsername;
     // End of variables declaration//GEN-END:variables
+    int totalWeeklyCal;
+    static int weekCounter, weekStudyHours;
+    static int tableType;
+    User loggedUser;
+    UserSummary newUserSum;
 }
 
 //Date Renderer
@@ -947,36 +1057,36 @@ class CaloriesRender extends DefaultTableCellRenderer {
     }
 }
 
-class modelListener implements TableModelListener {
+class modelListener implements TableModelListener { //here listen for changes in the tables
 
     JTable table;
 
     modelListener(JTable table) {
         this.table = table;
     }
-
+    
     @Override
     public void tableChanged(TableModelEvent e) {
         int colChanged = e.getColumn();
         int firstRowChanged = e.getFirstRow();
         int lastRowChanged = e.getLastRow();
         int netRowChange = lastRowChanged - firstRowChanged + 1;
+        
         switch (e.getType()) {
             case TableModelEvent.INSERT:
                 System.out.println("insert");
-                  System.out.println("First Row "+firstRowChanged);
-                  System.out.println("last Row "+lastRowChanged);
-                  System.out.println("last Col "+colChanged);
-              
+                System.out.println("First Row " + firstRowChanged);
+                System.out.println("last Row " + lastRowChanged);
+                System.out.println("last Col " + colChanged);
+
                 /*  if(colChanged == 0){
                 
                  }*/
                 break;
             case TableModelEvent.UPDATE:
-                System.out.println("update");
-                  for (int i = firstRowChanged; i <= lastRowChanged; i++) {
-                    
-                    System.out.println("cell Changed" + table.getValueAt(i, colChanged));
+                System.out.println("update");  
+                for (int i = firstRowChanged; i <= lastRowChanged; i++) {
+                    System.out.println("cell Changed: " + table.getValueAt(i, colChanged));
                 }
                 break;
             case TableModelEvent.DELETE:
@@ -987,12 +1097,12 @@ class modelListener implements TableModelListener {
 }
 
 /*class SummaryObj{
-    protected String month="";
-    protected String day="";
-    protected int netCal=0;
+ protected String month="";
+ protected String day="";
+ protected int netCal=0;
     
-    public SummaryObj(String date, int netCal){
+ public SummaryObj(String date, int netCal){
         
-    }
+ }
     
-}*/
+ }*/
