@@ -172,7 +172,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         //dina's stuff
         wrongPassword.setVisible(false);
         wrongUsername.setVisible(false);
-        totalWeeklyCal = 0;
+        totalConsumedCal = 0;
+        totalBurnedCal = 0;
         tableType = 0;
         weekCounter = 0;
         weekStudyHours = 0;
@@ -184,26 +185,18 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
     }
     ChangeListener changeListener = new ChangeListener() {
-      public void stateChanged(ChangeEvent changeEvent) {
-        JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
-        int index = sourceTabbedPane.getSelectedIndex();
-        String tabName = sourceTabbedPane.getTitleAt(index);
-        System.out.println("Tab changed to: " + sourceTabbedPane.getTitleAt(index));
-        if (tabName.equals("Week View")) {
-            calcSummary();
-            String msg = "<html><center>User " + loggedUser.getUserName() + " Studied for " + weekStudyHours + " Hours..";
-            if (weekStudyHours <= 10) {
-                msg += "<br>You Can Do Better</center></html>";
-            } else {
-                msg += "<br>Well Done!</center></html>";
+        public void stateChanged(ChangeEvent changeEvent) {
+            JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
+            int index = sourceTabbedPane.getSelectedIndex();
+            String tabName = sourceTabbedPane.getTitleAt(index);
+            System.out.println("Tab changed to: " + sourceTabbedPane.getTitleAt(index));
+            if (tabName.equals("Week View")) {
+                calcSummary();
+                setWeekViewMsg();
+            } else if (tabName.equals("Log View")) {
+
             }
-            calWeekSum.setFont(new Font("Serif", Font.PLAIN, 24));
-            calWeekSum.setText(msg);
-            
-        } else if (tabName.equals("Log View")) {
-            
         }
-      }
     };
 
     public void findWeek() {
@@ -222,33 +215,79 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         }
         newUserSum.setWeekNum(weekCounter);
     }
-
-    public static void calcSummary() { //here add calories and set the object
-        switch (tableType) {
+    
+    public void setWeekViewMsg(){
+        calWeekSum.setFont(new Font("Serif", Font.PLAIN, 24));
+        switch(tableType) {
             case 0:
-                studyTable.getModel();
-                int rows = studyTable.getRowCount();
-                int tempTotal = 0;
-                for (int i = 0; i < rows; i++) {
-                    if (studyTable.getValueAt(i, 1) != null) {
-                        tempTotal += (Integer.parseInt(studyTable.getValueAt(i, 1).toString()));
-                    }
+                String msg0 = "<html><center>User " + loggedUser.getUserName();
+                msg0 += "<br>You Studied for " + weekStudyHours + " Hours..";
+                if (weekStudyHours <= 10) {
+                    msg0 += "<br>You Can Do Better</center></html>";
+                } else {
+                    msg0 += "<br>Well Done!</center></html>";
                 }
-                weekStudyHours += tempTotal;
-                
-                System.out.println("total hours studied: " + weekStudyHours);
+                calWeekSum.setText(msg0);
                 break;
             case 1:
-                System.out.print("Nutrition Table Selected");
+                String msg1 = "<html><center>User " + loggedUser.getUserName();
+                msg1 += "<br>You Ate " + totalConsumedCal + " Calories..";
+                if (totalConsumedCal >= 4000) {
+                    msg1 += "<br>You Have to Eat More</center></html>";
+                } else {
+                    msg1 += "<br>More Calories Won't Hurt</center></html>";
+                }
+                calWeekSum.setText(msg1);
                 break;
             case 2:
-                System.out.print("Workout Table Selected");
+                String msg2 = "<html><center>User " + loggedUser.getUserName();
+                msg2 += "<br>You Burned " + totalBurnedCal + " Calories..";
+                if (totalConsumedCal >= 2000) {
+                    msg2 += "<br>You Deserve a Treat!</center></html>";
+                } else {
+                    msg2 += "<br>Work Hard</center></html>";
+                }
+                calWeekSum.setText(msg2);
                 break;
             default:
+                calWeekSum.setText("Something went wrong");
                 break;
+        
         }
+        
     }
-    
+
+    public static void calcSummary() { //here add calories and set the object
+        studyTable.getModel();
+        int rows = studyTable.getRowCount();
+        weekStudyHours = 0;
+        for (int i = 0; i < rows; i++) {
+            if (studyTable.getValueAt(i, 1) != null) {
+                weekStudyHours += (Integer.parseInt(studyTable.getValueAt(i, 1).toString()));
+            }
+        }
+        
+        nutritionTable.getModel();
+        int nutrientRow = nutritionTable.getRowCount();
+        totalConsumedCal = 0;
+        for (int i = 0; i < nutrientRow; i++) {
+            if (nutritionTable.getValueAt(i, 1) != null) {
+                totalConsumedCal += (Integer.parseInt(nutritionTable.getValueAt(i, 1).toString()));
+            }
+        }
+        
+        workoutTable.getModel();
+        int workoutRow = workoutTable.getRowCount();
+        totalBurnedCal = 0;
+        for (int i = 0; i < workoutRow; i++) {
+            if (workoutTable.getValueAt(i, 1) != null) {
+                totalBurnedCal += (Integer.parseInt(workoutTable.getValueAt(i, 1).toString()));
+                System.out.println("Cal cell: " + workoutTable.getValueAt(i, 1).toString());
+            }
+        }
+        
+    }
+
     //Setup Calories combo list
     public void setupCaloriesCol(TableColumn col) {
         Vector<Integer> cals = new Vector<Integer>();
@@ -896,13 +935,13 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         authorDialog.setMaximumSize(new Dimension(500, 500));
         authorDialog.setPreferredSize(new Dimension(500, 500));
         authorDialog.setVisible(true);
-
-
     }//GEN-LAST:event_authorMenuSelected
 
     private void workoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_workoutActionPerformed
         // TODO add your handling code here:
         tableType = 2;
+        calcSummary();
+        setWeekViewMsg();
         System.out.println("Workout is selected: ");
         scrollPane.setViewportView(workoutTable);
     }//GEN-LAST:event_workoutActionPerformed
@@ -910,6 +949,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private void nutritionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nutritionActionPerformed
         // TODO add your handling code here:
         tableType = 1;
+        calcSummary();
+        setWeekViewMsg();
         System.out.println("Nutrition is selected: ");
         scrollPane.setViewportView(nutritionTable);
     }//GEN-LAST:event_nutritionActionPerformed
@@ -934,6 +975,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private void studyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studyActionPerformed
         // TODO add your handling code here:
         tableType = 0;
+        calcSummary();
+        setWeekViewMsg();
         System.out.println("Study is selected: ");
         scrollPane.setViewportView(studyTable);
 
@@ -1023,8 +1066,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private javax.swing.JLabel wrongPassword;
     private javax.swing.JLabel wrongUsername;
     // End of variables declaration//GEN-END:variables
-    int totalWeeklyCal;
-    static int weekCounter, weekStudyHours;
+
+    static int weekCounter, weekStudyHours, totalConsumedCal, totalBurnedCal;
     static int tableType;
     User loggedUser;
     UserSummary newUserSum;
@@ -1064,14 +1107,14 @@ class modelListener implements TableModelListener { //here listen for changes in
     modelListener(JTable table) {
         this.table = table;
     }
-    
+
     @Override
     public void tableChanged(TableModelEvent e) {
         int colChanged = e.getColumn();
         int firstRowChanged = e.getFirstRow();
         int lastRowChanged = e.getLastRow();
         int netRowChange = lastRowChanged - firstRowChanged + 1;
-        
+
         switch (e.getType()) {
             case TableModelEvent.INSERT:
                 System.out.println("insert");
@@ -1084,7 +1127,7 @@ class modelListener implements TableModelListener { //here listen for changes in
                  }*/
                 break;
             case TableModelEvent.UPDATE:
-                System.out.println("update");  
+                System.out.println("update");
                 for (int i = firstRowChanged; i <= lastRowChanged; i++) {
                     System.out.println("cell Changed: " + table.getValueAt(i, colChanged));
                 }
