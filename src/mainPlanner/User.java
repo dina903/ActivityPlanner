@@ -1,5 +1,6 @@
 /**
  * @author Dina & Karoon
+ * 
  */
 
 package mainPlanner;
@@ -14,18 +15,21 @@ public class User implements Serializable {
  
     private static final long serialVersionUID = 1234L;
  
-    private String username = "Test construc Username";
-    private transient String userPassword = "Test construc Password";
+    private String username = "Constructor Username";
+    private String userPassword = "Constructor Password";
     static final String fileName = "PAM_User.ser";
+    private int weekOfYear = 0;
  
-    public User(String username, String password) {
+    public User(String username, String password, int w) {
         this.username = username;
         this.userPassword = password;
+        this.weekOfYear = w;    
     }
  
     public void printInfo() {
         System.out.println("username: " + username);
         System.out.println("password: " + userPassword);
+        System.out.println("week of year: " + weekOfYear);
     }
  
     // getters and setters
@@ -37,6 +41,15 @@ public class User implements Serializable {
     public void setUserPassword(String password) {
         this.userPassword = password;
     } 
+    
+    public void setWeekOfYear(int d) {
+        this.weekOfYear = d;
+    } 
+       
+     
+    public int getWeekOfYear() {
+       return weekOfYear;
+    }
 
     public String getUserName() {
        return username;
@@ -53,6 +66,8 @@ public class User implements Serializable {
      
     //Save and retrieve data
     static void serialize(User user) {
+        System.out.println("Serializing User...");
+        user.printInfo();
         try {
             FileOutputStream fos = new FileOutputStream(fileName);
             ObjectOutputStream outputStream = new ObjectOutputStream(fos);
@@ -72,9 +87,13 @@ public class User implements Serializable {
             ObjectInputStream inputStream = new ObjectInputStream(fis);
             savedUser = (User) inputStream.readObject();
             inputStream.close();
+            fis.close();
         } catch (IOException | ClassNotFoundException ex) {
             System.err.println(ex);
         }
+        System.out.println("Deserialized User...");
+        savedUser.printInfo();
+        
         return savedUser;
     }  
 }
