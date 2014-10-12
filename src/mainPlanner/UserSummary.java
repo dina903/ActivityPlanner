@@ -1,107 +1,130 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/****@author Karoon & Dina *****/
 package mainPlanner;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTable;
 
-/**
- *
- * @author Dido
- */
-public class UserSummary {
+
+public class UserSummary implements Serializable{
 
     String username = "newConstructName";
-
-    int weeklyCal = 0;
+    static ArrayList<UserSummary> myList = new ArrayList<UserSummary>();
+    
+    int weeklyCalConsumed = 0;
+    int weeklyCalBurned = 0;
+    int weeklyStudHrs = 0;
     int weekCount = 0;
     static String fileName = "PAM_User_Summary.ser";
 
-    UserSummary(int totalCal, String userName, int weekNum) {
+    UserSummary(String userName, int weekNum, int totalCal, int totalBurn, int totalHrs) {
         this.username = userName;
-        this.weeklyCal = totalCal;
+        this.weeklyCalConsumed = totalCal;
         this.weekCount = weekNum;
+        this.weeklyCalBurned = totalBurn;
+        this.weeklyStudHrs = totalHrs;
     }
 
     public void printInfo() {
         System.out.println("username: " + username);
         System.out.println("week number: " + weekCount);
-
+        System.out.println("Total calories consumed: " + weeklyCalConsumed);
+        System.out.println("Total calories Burned: " + weeklyCalBurned);
+        System.out.println("Total Studying Hours: " + weeklyStudHrs);
     }
-
+    //set methods for the week object
     public void setUserName(String name) {
         this.username = name;
-
-        String temp = name.concat(fileName);
-        fileName = new String(temp);
     }
-
-    public void setWeeklyCal(int cal) {
-        this.weeklyCal = cal;
-    }
-
     public void setWeekNum(int num) {
         this.weekCount = num;
     }
-
+    public void setWeeklyCalCons(int cal) {
+        this.weeklyCalConsumed = cal;
+    }
+    public void setWeeklyCalBurn(int burn) {
+        this.weeklyCalBurned = burn;
+    }
+    public void setWeeklyStudHrs(int hrs) {
+        this.weeklyStudHrs = hrs;
+    }
+    //get methods for the week object
     public String getUserName() {
         return username;
     }
-
-    public int getWeeklyCal() {
-        return weeklyCal;
-    }
-
     public int getWeekNum() {
         return weekCount;
     }
-
-    //Save and retrieve data
-
-    public void initSave() {
-        save(this);
-        System.out.println("saving summary file");
+    public int getWeeklyCalCons() {
+        return weeklyCalConsumed;
+    }
+    public int getWeeklyCalBurn() {
+        return weeklyCalBurned;
+    }
+    public int getWeeklyStudHrs() {
+        return weeklyStudHrs;
     }
 
+    //Save and retrieve data
+    public void initSave() {
+        myList.add(this);
+        System.out.println("initsave" + myList.size());
+        save(); 
+        System.out.println("saving summary file");
+    }  
+    public static void setMyList(ArrayList<UserSummary> info) {
+        myList = info;
+    }
     
-
-    static void save(UserSummary info) {
-        System.out.println("Serializing User Table info");
-
+    static void save() {
+        System.out.println("Saving User Summary"); 
         try {
-            System.out.println("file not found");
             FileOutputStream fos = new FileOutputStream(fileName);
             ObjectOutputStream outputStream = new ObjectOutputStream(fos);
-            outputStream.writeObject(info);
+            outputStream.writeObject(myList);
             outputStream.close();
-        } catch (IOException ex) {
-            System.err.println(ex);
+            fos.close();
+            System.out.println("Save is Successful");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    static UserSummary retrieve() {
-
-        UserSummary savedUserSum = null;
+    static ArrayList<UserSummary> retrieve() {
+        ArrayList<UserSummary> savedUserSum = null;
+        
         try {
-            FileInputStream fis = new FileInputStream(fileName);
-            ObjectInputStream inputStream = new ObjectInputStream(fis);
-            savedUserSum = (UserSummary) inputStream.readObject();
-            inputStream.close();
-            fis.close();
+            File myFile = new File(fileName);
+            if (myFile.exists()) {
+                myFile.createNewFile();
+                FileInputStream fis = new FileInputStream(fileName);
+                ObjectInputStream inputStream = new ObjectInputStream(fis);
+                savedUserSum = (ArrayList<UserSummary>) inputStream.readObject();
+                inputStream.close();
+                fis.close();
+            } else {
+                savedUserSum = new ArrayList<UserSummary>();
+                System.out.println("No File, Return empty");
+            }
+            
         } catch (IOException | ClassNotFoundException ex) {
             System.err.println(ex);
         }
-        System.out.println("Deserialized User Table info");
-
+        System.out.println("Retrieving Users List");
         return savedUserSum;
     }
 }
