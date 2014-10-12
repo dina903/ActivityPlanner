@@ -261,7 +261,7 @@ public class welcomeDialog extends javax.swing.JDialog {
                 if (thisWeek == loggedUser.getWeekOfYear()) {
                     calcWeek = 1;
                 } else {
-                    calcWeek = (thisWeek - loggedUser.getWeekOfYear())+4;
+                    calcWeek = (thisWeek - loggedUser.getWeekOfYear())+1;
                 }
                 
                 for (int i = 0; i < allUsers.size(); i++) {
