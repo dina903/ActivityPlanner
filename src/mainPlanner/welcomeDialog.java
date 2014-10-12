@@ -43,6 +43,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import static mainPlanner.welcomeDialog.studyTable;
+import java.beans.PropertyChangeListener;
 
 public class welcomeDialog extends javax.swing.JDialog {
     //Data Fields
@@ -69,17 +70,11 @@ public class welcomeDialog extends javax.swing.JDialog {
         signInPanel.setVisible(false);
         signUpPanel.setVisible(false);
         mainFrame.setVisible(false);
-        //South panel includes Submit button
-        //southPanel = new JPanel();
-        //mainFrame.getContentPane().add(southPanel, BorderLayout.PAGE_END);
-        //JButton save = new JButton("Save");
-        // southPanel.add(save, BorderLayout.LINE_END);
-        // save.setForeground(Color.red);
-        // save.setFont(new Font("Tahoma", Font.BOLD, 18));
-        //JDateChooser is on the top of left panel
+       
         jDateChooser1.setDate(new Date());
         jDateChooser1.setMinSelectableDate(jDateChooser1.getDate());
         System.out.println(jDateChooser1.getDate());
+        
         study.setSelected(true);
         //Create Study table and add it to JScrollPane
         dataStudy = new Vector<Object>();
@@ -179,6 +174,7 @@ public class welcomeDialog extends javax.swing.JDialog {
         validate();
     }
     
+   
     WindowAdapter saveOnClose = new WindowAdapter() {
         @Override
         public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -362,6 +358,7 @@ public class welcomeDialog extends javax.swing.JDialog {
         }
         loggedUserSum.setWeeklyCalBurn(totalBurnedCal);     
     }
+    
     //Setup Calories combo list
     public void setupCaloriesCol(TableColumn col) {
         Vector<Integer> cals = new Vector<Integer>();
@@ -639,7 +636,7 @@ public class welcomeDialog extends javax.swing.JDialog {
             }
         });
 
-        btnExistingUser.setText("Existing User");
+        btnExistingUser.setText("Go To Login");
         btnExistingUser.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExistingUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1131,7 +1128,7 @@ public class welcomeDialog extends javax.swing.JDialog {
     private javax.swing.JPasswordField existUserPassword;
     private javax.swing.JTextField existUsername;
     private javax.swing.JMenu file;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
+    private static com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JFrame mainFrame;
@@ -1231,13 +1228,4 @@ class modelListener implements TableModelListener { //here listen for changes in
         }
     }
 }
-/*class SummaryObj{
- protected String month="";
- protected String day="";
- protected int netCal=0;
-    
- public SummaryObj(String date, int netCal){
-        
- }
-    
- }*/
+
