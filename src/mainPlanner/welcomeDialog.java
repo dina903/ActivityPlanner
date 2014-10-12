@@ -1,4 +1,4 @@
-/*@author Karoon & Dina */
+/****@author Karoon & Dina *****/
 package mainPlanner;
 import java.awt.Color;
 import java.awt.Component;
