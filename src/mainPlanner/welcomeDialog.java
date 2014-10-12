@@ -1,63 +1,50 @@
-/**
- * @author Dina & Karoon
- */
+/*@author Karoon & Dina */
 package mainPlanner;
-
-import com.toedter.calendar.JDateChooser;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.PrintWriter;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Vector;
 import javax.imageio.ImageIO;
-import javax.rmi.CORBA.UtilDelegate;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import static mainPlanner.welcomeDialog.studyTable;
 
-public class welcomeDialog extends javax.swing.JDialog implements Serializable {
-
+public class welcomeDialog extends javax.swing.JDialog {
     //Data Fields
     User pamUser = new User("Test main", "Test main", 0);
     static JTable studyTable, nutritionTable, workoutTable;
@@ -69,9 +56,6 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     BufferedImage icon;
     Vector<Object> studyRow, studyColumns, dataStudy, dataNutrition, dataWorkout, nutritionCol, nutritionRow, workoutCol, workoutRow;
 
-    /**
-     * Creates new form welcomeDialog
-     */
     public welcomeDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -94,8 +78,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         // save.setFont(new Font("Tahoma", Font.BOLD, 18));
         //JDateChooser is on the top of left panel
         jDateChooser1.setDate(new Date());
+        jDateChooser1.setMinSelectableDate(jDateChooser1.getDate());
         System.out.println(jDateChooser1.getDate());
-
         study.setSelected(true);
         //Create Study table and add it to JScrollPane
         dataStudy = new Vector<Object>();
@@ -104,7 +88,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         studyColumns.add("Time Taken");
         studyRow = new Vector<Object>();
         dataStudy.add("");
-        dataStudy.add(new Integer(1));
+        dataStudy.add(new Integer(0));
         studyRow.add(dataStudy);
 
         studyModel = new DefaultTableModel(studyRow, studyColumns);
@@ -122,7 +106,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         nutritionRow = new Vector<Object>();
         dataNutrition = new Vector<Object>();
         dataNutrition.add("");
-        dataNutrition.add(new Integer(100));
+        dataNutrition.add(new Integer(0));
         dataNutrition.add(new Time(0));
         nutritionRow.add(dataNutrition);
         nutritionModel = new DefaultTableModel(nutritionRow, nutritionCol);
@@ -135,7 +119,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         workoutCol.add("Calories Burned");
         workoutCol.add("Time");
         dataWorkout.add("Treadmill");
-        dataWorkout.add(new Integer(100));
+        dataWorkout.add(new Integer(0));
         dataWorkout.add(new Time(0));
         workoutRow = new Vector<Object>();
         workoutRow.add(dataWorkout);
@@ -154,6 +138,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         group.add(study);
         group.add(nutrition);
         group.add(workout);
+
         //The following three calls are for drop down menu for Calories and machines
         setupCaloriesCol(nutritionTable.getColumnModel().getColumn(1));
         setupCaloriesCol(workoutTable.getColumnModel().getColumn(1));
@@ -161,6 +146,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
         BoxLayout weekLayout = new BoxLayout(weekSummary, BoxLayout.Y_AXIS);
         BoxLayout logLayout = new BoxLayout(logSummary, BoxLayout.Y_AXIS);
+        
         //Add a label to each summary panel to insert info
         calWeekSum = new JLabel("Week Summary");
         calLogSum = new JLabel("Log Summary");
@@ -169,7 +155,6 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         leftPanel.setPreferredSize(new Dimension(200, leftPanel.getHeight()));
         logoLabel.setText("");
 
-        //dina's stuff
         wrongPassword.setVisible(false);
         wrongUsername.setVisible(false);
         totalConsumedCal = 0;
@@ -178,86 +163,175 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         weekCounter = 0;
         weekStudyHours = 0;
         loggedUser = new User("Test main", "Test main", 0);
-        newUserSum = new UserSummary(0, "Construct Username", 0);
-        //end dina's stuff
-
+        loggedUserSum = new UserSummary("Construct Username", 0, 0, 0, 0);
+        file.add(saveObj);
+        saveObj.addActionListener(actionListener);
+        mainFrame.addWindowListener(saveOnClose);
+        calWeekSum.setFont(new Font("Tahoma", Font.PLAIN, 24));
+        calLogSum.setFont(new Font("Tahoma", Font.PLAIN, 24));
+        //center the dialog in the middle of the screen
+        final Toolkit toolkit = Toolkit.getDefaultToolkit();
+        final Dimension screenSize = toolkit.getScreenSize();
+        final int x = (screenSize.width - this.getWidth()) / 2;
+        final int y = (screenSize.height - this.getHeight()) / 2;
+        this.setLocation(x, y);
+        allUsers = UserSummary.retrieve();
         validate();
-
     }
+    
+    WindowAdapter saveOnClose = new WindowAdapter() {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+            saveInformation();
+            System.exit(0);
+        }
+        
+    };
+    
+    //save item in the file menue
+    ActionListener actionListener = new ActionListener() {
+        public void actionPerformed(ActionEvent arg0) {
+            loggedUserSum.setUserName(loggedUser.getUserName());
+            //saveInformation();
+            saveTable();
+        }
+    };
+    private JFileChooser myJFileChooser = new JFileChooser(new File(".txt"));
+
+    public void saveTable() {
+        if (myJFileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            saveTable(myJFileChooser.getSelectedFile());
+            myJFileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
+            myJFileChooser.setFileFilter(filter);
+            //saveInformation();
+        }
+    }
+    
+    private void saveTable(File file) {
+        
+        try {
+            PrintWriter os = new PrintWriter(file);
+            os.println();
+            ArrayList<UserSummary> myUserList = UserSummary.retrieve();
+            for (int j = 0; j < myUserList.size(); j++) {
+                os.println(saveMsg);
+            }
+            os.close();
+            System.out.println("Done!");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void saveInformation() {
+        calcSummary();
+        UserSummary.setMyList(allUsers);
+        loggedUserSum.initSave();
+        resetInformation();
+    }
+    
+    public void resetInformation() {
+        loggedUserSum.setWeeklyCalCons(0);
+        loggedUserSum.setWeeklyCalBurn(0);
+        loggedUserSum.setWeeklyStudHrs(0);
+    }
+    //notify when tab change - save an instance of the current values in table
     ChangeListener changeListener = new ChangeListener() {
         public void stateChanged(ChangeEvent changeEvent) {
             JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
             int index = sourceTabbedPane.getSelectedIndex();
             String tabName = sourceTabbedPane.getTitleAt(index);
             System.out.println("Tab changed to: " + sourceTabbedPane.getTitleAt(index));
+            //check what tab was selected
             if (tabName.equals("Week View")) {
                 calcSummary();
-                setWeekViewMsg();
+               
+                study.setVisible(false);
+                nutrition.setVisible(false);
+                workout.setVisible(false);
+                int weekHoursStudy = 0;
+                int weekCalorCons = 0;
+                int weekCalorBurn = 0;
+                Calendar thisWeekCal = jDateChooser1.getCalendar();
+                int thisWeek = thisWeekCal.get(Calendar.WEEK_OF_YEAR);
+                
+                System.out.println("All Users Retrieved " + allUsers.size());
+                int calcWeek = 0;
+                if (thisWeek == loggedUser.getWeekOfYear()) {
+                    calcWeek = 1;
+                } else {
+                    calcWeek = (thisWeek - loggedUser.getWeekOfYear())+4;
+                }
+                
+                for (int i = 0; i < allUsers.size(); i++) {
+                    //get the information only for a week similar to the currentWeek
+                    if (allUsers.get(i).getWeekNum() == calcWeek) {//find all instances of the same week
+                        weekHoursStudy += allUsers.get(i).getWeeklyStudHrs();
+                        weekCalorCons += allUsers.get(i).getWeeklyCalCons();
+                        weekCalorBurn += allUsers.get(i).getWeeklyCalBurn();
+                    } else {
+                        System.out.println("This Entry from a previous week");
+                    }                  
+                }
+                String weekMsg = "<html><center>User " + loggedUser.getUserName();
+                weekMsg += "<br><br>Total Hours Spent Studying " + (weekHoursStudy + loggedUserSum.getWeeklyStudHrs()) + " Hours";
+                weekMsg += "<br><br>Total Calories You Have Burned by WorkingOut " + (weekCalorBurn + loggedUserSum.getWeeklyCalBurn() ) + " Calories";
+                weekMsg += "<br><br>Total Calories You Ate " + (weekCalorCons+ loggedUserSum.getWeeklyCalCons()) + " Calories</center></html>";
+                saveMsg += weekMsg;
+                calWeekSum.setText(weekMsg);
+                
             } else if (tabName.equals("Log View")) {
-
+                calcSummary();
+                study.setVisible(false);
+                nutrition.setVisible(false);
+                workout.setVisible(false);
+                int totalHoursStudy = 0;
+                int totalCalorCons = 0;
+                int totalCalorBurn = 0;
+       
+                System.out.println("All Users Retrieved " + allUsers.size());
+                for (int i = 0; i < allUsers.size(); i++) {
+                    totalHoursStudy += allUsers.get(i).getWeeklyStudHrs();
+                    totalCalorBurn += allUsers.get(i).getWeeklyCalBurn();
+                    totalCalorCons += allUsers.get(i).getWeeklyCalCons();
+                }
+                                
+                String logMsg = "<html><center>User " + loggedUser.getUserName();
+                logMsg += "<br><br>Total Hours Spent Studying " + (totalHoursStudy+loggedUserSum.getWeeklyStudHrs()) + " Hours";
+                logMsg += "<br><br>Total Calories You Have Burned by WorkingOut " + (totalCalorBurn+loggedUserSum.getWeeklyCalBurn()) + " Calories";
+                logMsg += "<br><br>Total Calories You Ate " + (totalCalorCons+loggedUserSum.getWeeklyCalCons()) + " Calories</center></html>";
+                saveMsg += logMsg; 
+                calLogSum.setText(logMsg);
+            } else if(tabName.equals("Day View")) {
+                study.setVisible(true);
+                nutrition.setVisible(true);
+                workout.setVisible(true);
             }
         }
     };
-
+    
+    //find the week number for the current week
     public void findWeek() {
         System.out.println("Updating week counter");
-        Calendar currentWeek = Calendar.getInstance();
-        System.out.println("Current week of year is : " + currentWeek.get(Calendar.WEEK_OF_YEAR));
+        Calendar currentWeek = jDateChooser1.getCalendar();
         int newWeek = currentWeek.get(Calendar.WEEK_OF_YEAR);
-
+        System.out.println("Current week of year is : " + newWeek);
         if (newWeek == loggedUser.getWeekOfYear()) {
             System.out.println("In the same week");
-            weekCounter = newWeek;
-        } else if (newWeek > loggedUser.getWeekOfYear()) {
-            weekCounter = newWeek - loggedUser.getWeekOfYear();
+            weekCounter = 1; 
+            loggedUserSum.setWeekNum(weekCounter);
+        } else if (newWeek > loggedUser.getWeekOfYear()) { 
+            weekCounter = (newWeek - loggedUser.getWeekOfYear())+1; 
+            loggedUserSum.setWeekNum(weekCounter);
         } else {
             //deal with it later (check for year)
+            System.out.println("currentweek is less than the logged week");
         }
-        newUserSum.setWeekNum(weekCounter);
     }
-    
-    public void setWeekViewMsg(){
-        calWeekSum.setFont(new Font("Serif", Font.PLAIN, 24));
-        switch(tableType) {
-            case 0:
-                String msg0 = "<html><center>User " + loggedUser.getUserName();
-                msg0 += "<br>You Studied for " + weekStudyHours + " Hours..";
-                if (weekStudyHours <= 10) {
-                    msg0 += "<br>You Can Do Better</center></html>";
-                } else {
-                    msg0 += "<br>Well Done!</center></html>";
-                }
-                calWeekSum.setText(msg0);
-                break;
-            case 1:
-                String msg1 = "<html><center>User " + loggedUser.getUserName();
-                msg1 += "<br>You Ate " + totalConsumedCal + " Calories..";
-                if (totalConsumedCal >= 4000) {
-                    msg1 += "<br>You Have to Eat More</center></html>";
-                } else {
-                    msg1 += "<br>More Calories Won't Hurt</center></html>";
-                }
-                calWeekSum.setText(msg1);
-                break;
-            case 2:
-                String msg2 = "<html><center>User " + loggedUser.getUserName();
-                msg2 += "<br>You Burned " + totalBurnedCal + " Calories..";
-                if (totalConsumedCal >= 2000) {
-                    msg2 += "<br>You Deserve a Treat!</center></html>";
-                } else {
-                    msg2 += "<br>Work Hard</center></html>";
-                }
-                calWeekSum.setText(msg2);
-                break;
-            default:
-                calWeekSum.setText("Something went wrong");
-                break;
-        
-        }
-        
-    }
-
-    public static void calcSummary() { //here add calories and set the object
+    //calculate the summary of the three tables
+    public void calcSummary() { //here add calories and set the object
+        //study update
         studyTable.getModel();
         int rows = studyTable.getRowCount();
         weekStudyHours = 0;
@@ -266,7 +340,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                 weekStudyHours += (Integer.parseInt(studyTable.getValueAt(i, 1).toString()));
             }
         }
-        
+        loggedUserSum.setWeeklyStudHrs(weekStudyHours);
+        //nutrition update
         nutritionTable.getModel();
         int nutrientRow = nutritionTable.getRowCount();
         totalConsumedCal = 0;
@@ -275,19 +350,18 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                 totalConsumedCal += (Integer.parseInt(nutritionTable.getValueAt(i, 1).toString()));
             }
         }
-        
+        loggedUserSum.setWeeklyCalCons(totalConsumedCal);
+        //workout update
         workoutTable.getModel();
         int workoutRow = workoutTable.getRowCount();
         totalBurnedCal = 0;
         for (int i = 0; i < workoutRow; i++) {
             if (workoutTable.getValueAt(i, 1) != null) {
                 totalBurnedCal += (Integer.parseInt(workoutTable.getValueAt(i, 1).toString()));
-                System.out.println("Cal cell: " + workoutTable.getValueAt(i, 1).toString());
             }
         }
-        
+        loggedUserSum.setWeeklyCalBurn(totalBurnedCal);     
     }
-
     //Setup Calories combo list
     public void setupCaloriesCol(TableColumn col) {
         Vector<Integer> cals = new Vector<Integer>();
@@ -315,6 +389,10 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         combo.setSelectedIndex(0);
         col.setCellEditor(new DefaultCellEditor(combo));
         col.setCellRenderer(new CaloriesRender());
+    }
+    
+    public static void addBackbtn() {
+       back.setVisible(true);
     }
 
     /**
@@ -356,6 +434,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         signInbtn = new javax.swing.JButton();
         wrongUsername = new javax.swing.JLabel();
         wrongPassword = new javax.swing.JLabel();
+        back = new javax.swing.JButton();
         signUpPanel = new javax.swing.JPanel();
         signUpUsername = new javax.swing.JLabel();
         SignUppasswordLbl = new javax.swing.JLabel();
@@ -365,7 +444,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
         mainFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setTitle("Personal Activity Monitor");
-        mainFrame.setMinimumSize(new java.awt.Dimension(1152, 930));
+        mainFrame.setMinimumSize(new java.awt.Dimension(1152, 800));
 
         leftPanel.setName(""); // NOI18N
 
@@ -579,7 +658,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                 .addComponent(btnNewUser, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, welcomePanelLayout.createSequentialGroup()
-                .addContainerGap(103, Short.MAX_VALUE)
+                .addContainerGap(105, Short.MAX_VALUE)
                 .addGroup(welcomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, welcomePanelLayout.createSequentialGroup()
                         .addComponent(welcomeLbl2)
@@ -635,30 +714,39 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         wrongPassword.setForeground(new java.awt.Color(255, 0, 0));
         wrongPassword.setText("Wrong Password");
 
+        back.setText("Back");
+        back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout signInPanelLayout = new javax.swing.GroupLayout(signInPanel);
         signInPanel.setLayout(signInPanelLayout);
         signInPanelLayout.setHorizontalGroup(
             signInPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(signInPanelLayout.createSequentialGroup()
-                .addGap(84, 84, 84)
-                .addGroup(signInPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGap(66, 66, 66)
+                .addGroup(signInPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(signInPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(signInPanelLayout.createSequentialGroup()
+                            .addComponent(passwordLbl)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(existUserPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(signInPanelLayout.createSequentialGroup()
+                            .addComponent(usernameLbl)
+                            .addGap(18, 18, 18)
+                            .addComponent(existUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(signInPanelLayout.createSequentialGroup()
-                        .addComponent(passwordLbl)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(existUserPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(signInPanelLayout.createSequentialGroup()
-                        .addComponent(usernameLbl)
-                        .addGap(18, 18, 18)
-                        .addComponent(existUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(back)
+                        .addGap(42, 42, 42)
+                        .addComponent(signInbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)))
                 .addGap(18, 18, 18)
                 .addGroup(signInPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(wrongUsername)
                     .addComponent(wrongPassword))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signInPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(signInbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(161, 161, 161))
         );
         signInPanelLayout.setVerticalGroup(
             signInPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -674,7 +762,9 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                     .addComponent(passwordLbl)
                     .addComponent(wrongPassword))
                 .addGap(42, 42, 42)
-                .addComponent(signInbtn)
+                .addGroup(signInPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(signInbtn)
+                    .addComponent(back))
                 .addContainerGap(75, Short.MAX_VALUE))
         );
 
@@ -734,9 +824,9 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addComponent(welcomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(signInPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(signInPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(signUpPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(signUpPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -753,6 +843,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private void btnExistingUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExistingUserActionPerformed
         // TODO add your handling code here:
         welcomePanel.setVisible(false);
+        back.setVisible(false);
         signInPanel.setVisible(true);
     }//GEN-LAST:event_btnExistingUserActionPerformed
 
@@ -763,7 +854,6 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     }//GEN-LAST:event_btnNewUserActionPerformed
 
     private void signInbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInbtnActionPerformed
-
         User retrieveUser = pamUser.deserialize();
         String tempUsername = retrieveUser.getUserName();
         String tempUserpswd = retrieveUser.getUserPassword();
@@ -787,7 +877,6 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
                 wrongPassword.setVisible(true);
             }
         }
-
     }//GEN-LAST:event_signInbtnActionPerformed
 
     private void signUpbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signUpbtnActionPerformed
@@ -796,9 +885,8 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         Calendar now = Calendar.getInstance();
         System.out.println("Current week of year is : " + now.get(Calendar.WEEK_OF_YEAR));
         int weekNo = now.get(Calendar.WEEK_OF_YEAR);
-
+        weekNo = 37; //keep for testing only - has to be removed for other users
         User pamUser = new User("Test main", "Test main", weekNo);
-
         String username = NewUsername.getText().toString(); //get username textfield data
         //String userpassword = NewUserPassword.getPassword().toString(); //get password field data
         String userpassword = new String(NewUserPassword.getPassword());
@@ -808,7 +896,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         pamUser.initSave(); //save file
         pamUser.printInfo(); //print user information
         loggedUser = pamUser;
-        findWeek();//set the weekly counter for the new object
+        findWeek();//set the weekly counter for the week object
         setVisible(false);
         mainFrame.setVisible(true);
     }//GEN-LAST:event_signUpbtnActionPerformed
@@ -905,9 +993,9 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
         JPanel emails = new JPanel();
         JLabel karoon = new JLabel("Karoon Gayzagian");
         JLabel dina = new JLabel("Dina Najeeb");
-        JLabel karoonPic = new JLabel(new ImageIcon("src\\images\\karoon.jpg"));
+        JLabel karoonPic = new JLabel(new ImageIcon("..\\karoon.jpg"));
 
-        JLabel dinaPic = new JLabel(new ImageIcon("src\\images\\dina.jpg"));
+        JLabel dinaPic = new JLabel(new ImageIcon("..\\dina.jpg"));
         JLabel karoonEmail = new JLabel("karoon80@hotmail.com");
         JLabel dinaEmail = new JLabel("dina_2552@yahoo.com");
         photos.setLayout(panelLayout);
@@ -939,18 +1027,14 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
     private void workoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_workoutActionPerformed
         // TODO add your handling code here:
-        tableType = 2;
         calcSummary();
-        setWeekViewMsg();
         System.out.println("Workout is selected: ");
         scrollPane.setViewportView(workoutTable);
     }//GEN-LAST:event_workoutActionPerformed
 
     private void nutritionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nutritionActionPerformed
         // TODO add your handling code here:
-        tableType = 1;
         calcSummary();
-        setWeekViewMsg();
         System.out.println("Nutrition is selected: ");
         scrollPane.setViewportView(nutritionTable);
     }//GEN-LAST:event_nutritionActionPerformed
@@ -974,13 +1058,18 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
 
     private void studyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_studyActionPerformed
         // TODO add your handling code here:
-        tableType = 0;
         calcSummary();
-        setWeekViewMsg();
         System.out.println("Study is selected: ");
         scrollPane.setViewportView(studyTable);
 
     }//GEN-LAST:event_studyActionPerformed
+
+    private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
+        // TODO add your handling code here:
+        back.setVisible(false);
+        signInPanel.setVisible(false);
+        signUpPanel.setVisible(true);
+    }//GEN-LAST:event_backActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1035,6 +1124,7 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private java.awt.Label activities;
     private javax.swing.JButton addRow;
     private javax.swing.JMenu author;
+    private static javax.swing.JButton back;
     private javax.swing.JButton btnExistingUser;
     private javax.swing.JButton btnNewUser;
     private javax.swing.JButton deleteRow;
@@ -1066,12 +1156,16 @@ public class welcomeDialog extends javax.swing.JDialog implements Serializable {
     private javax.swing.JLabel wrongPassword;
     private javax.swing.JLabel wrongUsername;
     // End of variables declaration//GEN-END:variables
-
+    JMenuItem saveObj = new JMenuItem("Save as");
     static int weekCounter, weekStudyHours, totalConsumedCal, totalBurnedCal;
     static int tableType;
     User loggedUser;
-    UserSummary newUserSum;
+    UserSummary loggedUserSum;
+    ArrayList<UserSummary> allUsers;
+    String saveMsg = "PAM User Activity\n";
 }
+
+
 
 //Date Renderer
 class DateRender extends DefaultTableCellRenderer {
@@ -1138,7 +1232,6 @@ class modelListener implements TableModelListener { //here listen for changes in
         }
     }
 }
-
 /*class SummaryObj{
  protected String month="";
  protected String day="";
