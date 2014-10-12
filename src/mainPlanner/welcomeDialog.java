@@ -97,12 +97,10 @@ public class welcomeDialog extends javax.swing.JDialog {
         nutritionCol = new Vector<Object>();
         nutritionCol.add("Food/Drink");
         nutritionCol.add("Calories");
-        nutritionCol.add("Time");
         nutritionRow = new Vector<Object>();
         dataNutrition = new Vector<Object>();
         dataNutrition.add("");
         dataNutrition.add(new Integer(0));
-        dataNutrition.add(new Time(0));
         nutritionRow.add(dataNutrition);
         nutritionModel = new DefaultTableModel(nutritionRow, nutritionCol);
         nutritionTable = new JTable(nutritionModel);
@@ -112,10 +110,8 @@ public class welcomeDialog extends javax.swing.JDialog {
         dataWorkout = new Vector<Object>();
         workoutCol.add("Workout Type");
         workoutCol.add("Calories Burned");
-        workoutCol.add("Time");
         dataWorkout.add("Treadmill");
         dataWorkout.add(new Integer(0));
-        dataWorkout.add(new Time(0));
         workoutRow = new Vector<Object>();
         workoutRow.add(dataWorkout);
         workoutModel = new DefaultTableModel(workoutRow, workoutCol);
