@@ -204,11 +204,12 @@ public class welcomeDialog extends javax.swing.JDialog {
         
         try {
             PrintWriter os = new PrintWriter(file);
+            prepInfo();
+            os.println(saveMsg);
             os.println();
-            ArrayList<UserSummary> myUserList = UserSummary.retrieve();
-            for (int j = 0; j < myUserList.size(); j++) {
-                os.println(saveMsg);
-            }
+            os.println(saveMsgLog);
+            os.println();
+            os.println("\n\nThank You for Using PAM Activity Planner!");
             os.close();
             System.out.println("Done!");
         } catch (Exception ex) {
@@ -221,6 +222,50 @@ public class welcomeDialog extends javax.swing.JDialog {
         UserSummary.setMyList(allUsers);
         loggedUserSum.initSave();
         resetInformation();
+    }
+   
+    public void prepInfo() {
+        calcSummary();
+        int totalHoursStudy = 0;
+        int totalCalorCons = 0;
+        int totalCalorBurn = 0;
+        int weekHoursStudy = 0;
+        int weekCalorCons = 0;
+        int weekCalorBurn = 0;
+
+        Calendar thisWeekCal = jDateChooser1.getCalendar();
+        int thisWeek = thisWeekCal.get(Calendar.WEEK_OF_YEAR);
+
+        System.out.println("All Users Retrieved " + allUsers.size());
+        int calcWeek = 0;
+        if (thisWeek == loggedUser.getWeekOfYear()) {
+            calcWeek = 1;
+        } else {
+            calcWeek = (thisWeek - loggedUser.getWeekOfYear()) + 1;
+        }
+
+        for (int i = 0; i < allUsers.size(); i++) {
+            //get the information only for a week similar to the currentWeek
+            if (allUsers.get(i).getWeekNum() == calcWeek) {//find all instances of the same week
+                weekHoursStudy += allUsers.get(i).getWeeklyStudHrs();
+                weekCalorCons += allUsers.get(i).getWeeklyCalCons();
+                weekCalorBurn += allUsers.get(i).getWeeklyCalBurn();
+            }
+        }
+        saveMsg = "User " + loggedUser.getUserName() + " Summary of Weekly Progress: "
+                + "\n\n Total Hours Spent Studying " + (weekHoursStudy + loggedUserSum.getWeeklyStudHrs()) + " Hours"
+                + "\n\n Total Calories You Have Burned by WorkingOut " + (weekCalorBurn + loggedUserSum.getWeeklyCalBurn()) + " Calories"
+                + "\n\n Total Calories You Ate " + (weekCalorCons + loggedUserSum.getWeeklyCalCons()) + " Calories";
+
+        for (int i = 0; i < allUsers.size(); i++) {
+            totalHoursStudy += allUsers.get(i).getWeeklyStudHrs();
+            totalCalorBurn += allUsers.get(i).getWeeklyCalBurn();
+            totalCalorCons += allUsers.get(i).getWeeklyCalCons();
+        }
+        saveMsgLog = "User " + loggedUser.getUserName() + " Overall Summary: "
+                + "\n\n Total Hours Spent Studying " + (totalHoursStudy + loggedUserSum.getWeeklyStudHrs()) + " Hours"
+                + "\n\n Total Calories You Have Burned by WorkingOut " + (totalCalorBurn + loggedUserSum.getWeeklyCalBurn()) + " Calories"
+                + "\n\n Total Calories You Ate " + (totalCalorCons + loggedUserSum.getWeeklyCalCons()) + " Calories";
     }
     
     public void resetInformation() {
@@ -237,8 +282,7 @@ public class welcomeDialog extends javax.swing.JDialog {
             System.out.println("Tab changed to: " + sourceTabbedPane.getTitleAt(index));
             //check what tab was selected
             if (tabName.equals("Week View")) {
-                calcSummary();
-               
+                calcSummary();               
                 study.setVisible(false);
                 nutrition.setVisible(false);
                 workout.setVisible(false);
@@ -269,8 +313,8 @@ public class welcomeDialog extends javax.swing.JDialog {
                 String weekMsg = "<html><center>User " + loggedUser.getUserName();
                 weekMsg += "<br><br>Total Hours Spent Studying " + (weekHoursStudy + loggedUserSum.getWeeklyStudHrs()) + " Hours";
                 weekMsg += "<br><br>Total Calories You Have Burned by WorkingOut " + (weekCalorBurn + loggedUserSum.getWeeklyCalBurn() ) + " Calories";
-                weekMsg += "<br><br>Total Calories You Ate " + (weekCalorCons+ loggedUserSum.getWeeklyCalCons()) + " Calories</center></html>";
-                saveMsg += weekMsg;
+                weekMsg += "<br><br>Total Calories You Ate " + (weekCalorCons+ loggedUserSum.getWeeklyCalCons()) + " Calories";
+                
                 calWeekSum.setText(weekMsg);
                 
             } else if (tabName.equals("Log View")) {
@@ -293,7 +337,7 @@ public class welcomeDialog extends javax.swing.JDialog {
                 logMsg += "<br><br>Total Hours Spent Studying " + (totalHoursStudy+loggedUserSum.getWeeklyStudHrs()) + " Hours";
                 logMsg += "<br><br>Total Calories You Have Burned by WorkingOut " + (totalCalorBurn+loggedUserSum.getWeeklyCalBurn()) + " Calories";
                 logMsg += "<br><br>Total Calories You Ate " + (totalCalorCons+loggedUserSum.getWeeklyCalCons()) + " Calories</center></html>";
-                saveMsg += logMsg; 
+                
                 calLogSum.setText(logMsg);
             } else if(tabName.equals("Day View")) {
                 study.setVisible(true);
@@ -1154,7 +1198,8 @@ public class welcomeDialog extends javax.swing.JDialog {
     User loggedUser;
     UserSummary loggedUserSum;
     ArrayList<UserSummary> allUsers;
-    String saveMsg = "PAM User Activity\n";
+    String saveMsg = "PAM User Activity Weekly Progress\n";
+    String saveMsgLog = "PAM User Activity Overall Progress\n";
 }
 
 
