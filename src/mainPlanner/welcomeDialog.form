@@ -7,7 +7,7 @@
         <Property name="defaultCloseOperation" type="int" value="3"/>
         <Property name="title" type="java.lang.String" value="Personal Activity Monitor"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[1152, 800]"/>
+          <Dimension value="[1152, 970]"/>
         </Property>
       </Properties>
 

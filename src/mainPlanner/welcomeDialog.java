@@ -481,7 +481,7 @@ public class welcomeDialog extends javax.swing.JDialog {
 
         mainFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setTitle("Personal Activity Monitor");
-        mainFrame.setMinimumSize(new java.awt.Dimension(1152, 800));
+        mainFrame.setMinimumSize(new java.awt.Dimension(1152, 970));
 
         leftPanel.setName(""); // NOI18N
 
